@@ -134,3 +134,10 @@ void fillScreen(uint16_t color){
 		vram[i] = color;
 }
 
+extern "C" void getKey(uint32_t *key1, uint32_t *key2) {
+    const auto hw = reinterpret_cast<volatile uint16_t *>(0xa44B0000);
+    *key1 = hw[0] << 16 | hw[1];
+    *key2 = hw[2] << 16 | hw[3];
+    hw[4];
+    hw[5];
+}
