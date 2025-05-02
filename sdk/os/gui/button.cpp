@@ -1,5 +1,15 @@
 #include <sdk/os/gui.hpp>
 
+/// @cond INTERNAL
+extern "C"
+void *GUIButton_ctor(
+	void *button,
+	uint16_t bounds[4],
+	const char *text,
+	uint16_t eventID, int unk0, int unk1
+);
+/// @endcond
+
 /**
  * Creates a button.
  * 

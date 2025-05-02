@@ -2,4 +2,9 @@
 *.o
 *.bin
 *.elf
+*.hh3
 *.map
+
+# some temporary files under wsl
+*~
+.*~

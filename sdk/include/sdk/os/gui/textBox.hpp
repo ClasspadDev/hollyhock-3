@@ -1,5 +1,5 @@
 #pragma once
-#include <stdint.h>
+#include <cstdint>
 #include "util.hpp"
 
 /// @private
@@ -22,7 +22,9 @@ struct GUITextBox_Wrapped {
 
 	uint8_t unknown2[0x48];
 };
+#ifndef __clang__
 static_assert(sizeof(struct GUITextBox_Wrapped) == 0xA0);
+#endif
 
 class GUITextBox : public GUIElement {
 public:
@@ -46,15 +48,3 @@ public:
 	const char *GetText();
 	void SetText(const char *text);
 };
-
-/// @cond INTERNAL
-extern "C"
-struct GUITextBox_Wrapped *GUITextBox_ctor(
-	void *textBox,
-	int x, int y, int width,
-	const char *text,
-	int unknown0,
-	int flags,
-	int maxLength, bool countLengthByBytes
-);
-/// @endcond

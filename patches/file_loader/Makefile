@@ -1,9 +1,9 @@
 ADDR:=80128ff0
 
-AS:=sh4aeb-elf-gcc
+AS:=sh4a_nofpueb-elf-gcc
 AS_FLAGS:=
 
-OBJCOPY:=sh4aeb-elf-objcopy
+OBJCOPY:=sh4a_nofpueb-elf-objcopy
 OBJCOPY_FLAGS:=-O binary
 
 all: mod.part.txt Makefile

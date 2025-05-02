@@ -1,5 +1,16 @@
 #include <sdk/os/gui.hpp>
-#include <sdk/os/mem.hpp>
+#include <sdk/os/mem.h>
+
+/// @cond INTERNAL
+extern "C"
+struct GUIDialog_Wrapped *GUIDialog_ctor(
+	void *dialog,
+	int height, int alignment,
+	const char *title,
+	int unknown2, int unknown3,
+	int keyboard
+);
+/// @endcond
 
 /**
  * Creates a dialog.
@@ -40,7 +51,7 @@ int GUIDialog::OnEvent_Wrap(struct GUIDialog_Wrapped *dialog, struct GUIDialog_O
 }
 
 // TODO: remove the dialog param and update apps
-int GUIDialog::OnEvent(struct GUIDialog_Wrapped *dialog, struct GUIDialog_OnEvent_Data *event) {
+int GUIDialog::OnEvent(struct GUIDialog_Wrapped *dialog [[maybe_unused]], struct GUIDialog_OnEvent_Data *event) {
 	// We've overidden the entry for OnEvent in our vtable with one that
 	// redirects to this method. Since we've done that, if we want to call the
 	// actual base OnEvent method, we use the old vtable we backed up in the

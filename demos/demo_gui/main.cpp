@@ -1,7 +1,7 @@
-#include <appdef.hpp>
-#include <sdk/os/debug.hpp>
+#include <appdef.h>
+#include <sdk/os/debug.h>
 #include <sdk/os/gui.hpp>
-#include <sdk/os/lcd.hpp>
+#include <sdk/os/lcd.h>
 
 APP_NAME("Demo GUI")
 APP_DESCRIPTION("Demonstrates the use of the GUI system.")
@@ -108,7 +108,7 @@ private:
 	GUILongLabel m_longLabel;
 };
 
-void main() {
+int main() {
 	// Create an instance of our dialog - but don't show it yet.
 	MyDialog dialog;
 
@@ -123,4 +123,5 @@ void main() {
 		"Dialog closed with result %X", result
 	);
 	LCD_Refresh();
+	return 0;
 }

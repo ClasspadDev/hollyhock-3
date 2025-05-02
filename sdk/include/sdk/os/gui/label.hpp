@@ -1,5 +1,5 @@
 #pragma once
-#include <stdint.h>
+#include <cstdint>
 #include "util.hpp"
 
 class GUILabel : public GUIElement {
@@ -32,17 +32,3 @@ public:
 	);
 };
 
-/// @cond INTERNAL
-extern "C"
-void *GUILabel_ctor(
-	void *label,
-	int x, int y,
-	const char *text,
-	int unknown0,
-	int flags,
-	void *font,
-	uint16_t *textColor, uint16_t *backgroundColor,
-	bool showShadow, uint16_t shadowColor,
-	int unknown1
-);
-/// @endcond

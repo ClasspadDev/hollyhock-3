@@ -1,5 +1,5 @@
 #pragma once
-#include <stdint.h>
+#include <cstdint>
 #include "util.hpp"
 
 class GUIButton : public GUIElement {
@@ -21,12 +21,3 @@ public:
 	);
 };
 
-/// @cond INTERNAL
-extern "C"
-void *GUIButton_ctor(
-	void *button,
-	uint16_t bounds[4],
-	const char *text,
-	uint16_t eventID, int unk0, int unk1
-);
-/// @endcond

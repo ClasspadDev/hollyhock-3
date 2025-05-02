@@ -1,9 +1,9 @@
-#include <appdef.hpp>
+#include <appdef.h>
 #include <stdint.h>
 #include <sdk/cpu/ubc.hpp>
-#include <sdk/os/debug.hpp>
+#include <sdk/os/debug.h>
 #include <sdk/os/gui.hpp>
-#include <sdk/os/lcd.hpp>
+#include <sdk/os/lcd.h>
 
 APP_NAME("Breakpoint Utility")
 APP_DESCRIPTION("Set breakpoints within apps or OS code to view CPU state.")
@@ -270,7 +270,8 @@ private:
 	GUIButton m_close;
 };
 
-void main() {
+int main() {
 	BreakpointDialog dialog;
 	dialog.ShowDialog();
+	return 0;
 }

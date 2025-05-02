@@ -1,5 +1,10 @@
 #include <sdk/os/gui.hpp>
 
+/// @cond INTERNAL
+extern "C"
+void *GUILongLabel_ctor(void *longLabel, uint16_t bounds[4], int unk0, int unk1, const char *text, int unk2);
+/// @endcond
+
 /**
  * Creates a long label, capable of displaying multiple lines of text.
  * 

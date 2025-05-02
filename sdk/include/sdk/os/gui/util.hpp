@@ -1,5 +1,5 @@
 #pragma once
-#include <stdint.h>
+#include <cstdint>
 
 // No point in documenting these macros. If people are trying to use them,
 // they're doing something weird and I don't want to help them :)

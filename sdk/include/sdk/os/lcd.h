@@ -25,22 +25,30 @@
  */
 
 #pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
+#define __UCONCAT(a, b) #a b
+#define _UCONCAT(a, b) __UCONCAT(a, b)
+#define UCONCAT(b) _UCONCAT(__USER_LABEL_PREFIX__, b)
+
 /**
- * @defgroup palette_colors Palette Colors
  * Passed to @ref LCD_SetPixelFromPalette.
- * @{
  */
-const uint8_t PALETTE_BLACK = 0;
-const uint8_t PALETTE_BLUE = 1;
-const uint8_t PALETTE_GREEN = 2;
-const uint8_t PALETTE_CYAN = 3;
-const uint8_t PALETTE_RED = 4;
-const uint8_t PALETTE_MAGENTA = 5;
-const uint8_t PALETTE_YELLOW = 6;
-const uint8_t PALETTE_WHITE = 7;
-/// @}
+enum LCD_Palette {
+	PALETTE_BLACK = 0,
+	PALETTE_BLUE = 1,
+	PALETTE_GREEN = 2,
+	PALETTE_CYAN = 3,
+	PALETTE_RED = 4,
+	PALETTE_MAGENTA = 5,
+	PALETTE_YELLOW = 6,
+	PALETTE_WHITE = 7
+};
 
 /**
  * Converts three RGB values into one RGB565 value.
@@ -83,8 +91,7 @@ const uint8_t PALETTE_WHITE = 7;
 /**
  * Clears the LCD. Fills VRAM with white, but does not refresh the LCD.
  */
-extern "C"
-void LCD_ClearScreen();
+extern void (*LCD_ClearScreen)();
 
 /**
  * Returns the color of a pixel. This is not necessarily the color which is
@@ -94,16 +101,16 @@ void LCD_ClearScreen();
  * @param x,y The coordinates of the pixel.
  * @return The color of the pixel, in RGB565 format.
  */
-extern "C"
-uint16_t LCD_GetPixel(int x, int y);
+extern uint16_t (*LCD_GetPixel)(unsigned int x, unsigned int y);
 
 /**
  * Retrieves the size, in pixels, of the LCD.
  * 
  * @param[out] width,height The LCD's size.
  */
-extern "C"
-void LCD_GetSize(int *width, int *height);
+extern void (*LCD_GetSize)(unsigned int *width, unsigned int *height);
+
+extern uint16_t *(*_FP_LCD_GetVRAMAddress)() __asm__ (UCONCAT("LCD_GetVRAMAddress"));
 
 /**
  * Returns a pointer to the video RAM. Video RAM is composed of
@@ -112,14 +119,14 @@ void LCD_GetSize(int *width, int *height);
  *
  * @return A pointer to the VRAM.
  */
-extern "C"
-uint16_t *LCD_GetVRAMAddress();
+static inline __attribute__((const, always_inline)) uint16_t *LCD_GetVRAMAddress() {
+	return _FP_LCD_GetVRAMAddress();
+}
 
 /**
  * Pushes the content of the VRAM to the LCD.
  */
-extern "C"
-void LCD_Refresh();
+extern void (*LCD_Refresh)();
 
 /**
  * Sets the color of a pixel. The result of this operation will not be visible
@@ -128,18 +135,20 @@ void LCD_Refresh();
  * @param x,y The coordinate of the pixel.
  * @param color The color to set the pixel, in RGB565 format.
  */
-extern "C"
-void LCD_SetPixel(int x, int y, uint16_t color);
+extern void (*LCD_SetPixel)(unsigned int x, unsigned int y, uint16_t color);
+
+extern void (*LCD_SetPixelFromPaletteU)(unsigned int x, unsigned int y, uint8_t index) __asm__ (UCONCAT("LCD_SetPixelFromPalette"));
 
 /**
  * Sets the color of a pixel, from a pre-defined palette. Result is not visible
- * until @ref LCD_Refresh is called. See @ref palette_colors.
+ * until @ref LCD_Refresh is called. See @ref LCD_Palette.
  *
  * @param x,y The coordinate of the pixel.
- * @param index The index of the color in the palette to use.
+ * @param color The color in the palette to use.
  */
-extern "C"
-void LCD_SetPixelFromPalette(int x, int y, uint8_t index);
+static inline __attribute__((always_inline)) void LCD_SetPixelFromPalette(unsigned int x, unsigned int y, enum LCD_Palette color) {
+	LCD_SetPixelFromPaletteU(x, y, (uint8_t)color);
+}
 
 /**
  * Backs up the current contents of VRAM.
@@ -148,8 +157,7 @@ void LCD_SetPixelFromPalette(int x, int y, uint8_t index);
  * 
  * Used in conjunction with @ref LCD_VRAMRestore.
  */
-extern "C"
-void LCD_VRAMBackup();
+extern void (*LCD_VRAMBackup)();
 
 /**
  * Restores the backed up contents of VRAM. The restored content is not
@@ -157,5 +165,12 @@ void LCD_VRAMBackup();
  * 
  * Used in conjunction with @ref LCD_VRAMBackup.
  */
-extern "C"
-void LCD_VRAMRestore();
+extern void (*LCD_VRAMRestore)();
+
+#undef __UCONCAT
+#undef _UCONCAT
+#undef UCONCAT
+
+#ifdef __cplusplus
+}
+#endif

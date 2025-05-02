@@ -6,15 +6,26 @@
  */
 
 #pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define __UCONCAT(a, b) #a b
+#define _UCONCAT(a, b) __UCONCAT(a, b)
+#define UCONCAT(b) _UCONCAT(__USER_LABEL_PREFIX__, b)
+
 #include <stdint.h>
+#include <stddef.h>
 
 /**
  * Frees memory allocated by @ref malloc, allowing it to be reused.
  * 
  * @param ptr The pointer to the allocated region of memory to free.
  */
-extern "C"
-void Mem_Free(void *ptr);
+extern void (*Mem_Free)(void *ptr);
+
+extern void *(*_FP_Mem_Malloc)(size_t size) __asm__ (UCONCAT("Mem_Malloc")) __attribute__((alloc_size(1), warn_unused_result));
 
 /**
  * Allocates @p size bytes of memory.
@@ -24,8 +35,10 @@ void Mem_Free(void *ptr);
  * @param size The number of bytes of memory to allocate.
  * @return A pointer to the allocated memory region.
  */
-extern "C"
-void *Mem_Malloc(uint32_t size);
+static void *Mem_Malloc(size_t size) __asm__ (UCONCAT("Mem_Malloc_Wrapper")) __attribute__((malloc, alloc_size(1), assume_aligned(4), unused, warn_unused_result));
+void *Mem_Malloc(size_t size) {
+    return _FP_Mem_Malloc(size);
+}
 
 /**
  * Copies one region of memory to another. Equivalent to the C standard library
@@ -38,8 +51,11 @@ void *Mem_Malloc(uint32_t size);
  * @param num The number of bytes to copy.
  * @return @p destination
  */
-extern "C"
-void *Mem_Memcpy(void *destination, const void *source, int num);
+extern void *(*Mem_Memcpy)(void *destination, const void *source, size_t num)
+#ifndef __clang__
+__attribute__((access(read_only, 2, 3), access(write_only, 1, 3)))
+#endif
+;
 
 /**
  * Sets a region of memory to a specific value. Equivalent to the C standard
@@ -53,5 +69,12 @@ void *Mem_Memcpy(void *destination, const void *source, int num);
  * @param num The number of bytes to fill.
  * @return @p ptr
  */
-extern "C"
-void *Mem_Memset(void *ptr, int value, int num);
+extern void *(*Mem_Memset)(void *ptr, int value, size_t num)
+#ifndef __clang__
+__attribute__((access(write_only, 1, 3)))
+#endif
+;
+
+#ifdef __cplusplus
+}
+#endif

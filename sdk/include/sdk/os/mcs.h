@@ -4,77 +4,107 @@
  */
 
 #pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
-/**
- * Variable type: %OBCD (@c struct @ref OBCD).
- */
-const uint8_t VARTYPE_OBCD = 0x01;
+#define __UCONCAT(a, b) #a b
+#define _UCONCAT(a, b) __UCONCAT(a, b)
+#define UCONCAT(b) _UCONCAT(__USER_LABEL_PREFIX__, b)
 
-/**
- * Variable type: %CBCD (@c struct @ref CBCD).
- */
-const uint8_t VARTYPE_CBCD = 0x02;
+#ifndef __clang__
+#define cstr(x) __attribute__((null_terminated_string_arg(x)))
+#define ro(...) __attribute__((access(read_only, __VA_ARGS__)))
+#define rw(...) __attribute__((access(read_write, __VA_ARGS__)))
+#define wo(...) __attribute__((access(write_only, __VA_ARGS__)))
+#else
+#define cstr(x)
+#define ro(...)
+#define rw(...)
+#define wo(...)
+#endif
 
-/**
- * Variable type: null-terminated string.
- */
-const uint8_t VARTYPE_STR = 0x05;
+#define wu __attribute__((warn_unused_result))
+#define inline inline __attribute__((always_inline))
 
-/**
- * Variable type: list.
- */
-const uint8_t VARTYPE_LIST = 0x0A;
+enum MCS_VariableType {
+	/**
+	 * Variable type: %OBCD (@c struct @ref OBCD).
+	 */
+	VARTYPE_OBCD = 0x01,
 
-/**
- * Variable type: matrix.
- */
-const uint8_t VARTYPE_MAT = 0x0C;
+	/**
+	 * Variable type: %CBCD (@c struct @ref CBCD).
+	 */
+	VARTYPE_CBCD = 0x02,
 
-/**
- * Variable type: program.
- */
-const uint8_t VARTYPE_PRGM = 0x47;
+	/**
+	 * Variable type: null-terminated string.
+	 */
+	VARTYPE_STR = 0x05,
 
-/**
- * Variable type: function.
- */
-const uint8_t VARTYPE_FUNC = 0x48;
+	/**
+	 * Variable type: list.
+	 */
+	VARTYPE_LIST = 0x0A,
 
-/**
- * Variable type: geometry data.
- */
-const uint8_t VARTYPE_GEO = 0x54;
+	/**
+	 * Variable type: matrix.
+	 */
+	VARTYPE_MAT = 0x0C,
 
-/**
- * Error code signaling that the variable does not exist.
- */
-const int MCS_NO_VARIABLE = 0x30;
+	/**
+	 * Variable type: program.
+	 */
+	VARTYPE_PRGM = 0x47,
 
-/**
- * Error code signaling that the folder does not exist.
- */
-const int MCS_NO_FOLDER = 0x40;
+	/**
+	 * Variable type: function.
+	 */
+	VARTYPE_FUNC = 0x48,
 
-/**
- * Error code signaling that the folder already exists.
- */
-const int MCS_FOLDER_EXISTS = 0x42;
+	/**
+	 * Variable type: geometry data.
+	 */
+	VARTYPE_GEO = 0x54
+};
 
-/**
- * Error code signaling that the specified size was not a power of 2.
- */
-const int MCS_SIZE_NOT_PO2 = 0x61;
+enum MCS_Error {
+	MCS_OK = 0x00,
 
-/**
- * Error code signaling that the variable was not a list.
- */
-const int MCS_NOT_LIST = 0x62;
+	/**
+	 * Error code signaling that the variable does not exist.
+	 */
+	MCS_NO_VARIABLE = 0x30,
 
-/**
- * Error code signaling that the index was out of bounds.
- */
-const int MCS_INDEX_OOB = 0x63;
+	/**
+	 * Error code signaling that the folder does not exist.
+	 */
+	MCS_NO_FOLDER = 0x40,
+
+	/**
+	 * Error code signaling that the folder already exists.
+	 */
+	MCS_FOLDER_EXISTS = 0x42,
+
+	/**
+	 * Error code signaling that the specified size was not a power of 2.
+	 */
+	MCS_SIZE_NOT_PO2 = 0x61,
+
+	/**
+	 * Error code signaling that the variable was not a list.
+	 */
+	MCS_NOT_LIST = 0x62,
+
+	/**
+	 * Error code signaling that the index was out of bounds.
+	 */
+	MCS_INDEX_OOB = 0x63
+};
 
 /**
  * Retrieves the BCD digit at position @c i (0 representing the least
@@ -119,8 +149,12 @@ struct CBCD {
  * @return 0 if the folder was created successfully, or @c MCS_FOLDER_EXISTS if
  * the folder already exists.
  */
-extern "C"
-int MCS_CreateFolder(const char *folder, uint8_t *folderIndex);
+extern enum MCS_Error (*MCS_CreateFolder)(const char *folder, uint8_t *folderIndex) wu cstr(1);
+
+extern enum MCS_Error (*MCS_GetVariableU)(
+	const char *folder, const char *name,
+	uint8_t *variableType, char **name2, void **data, uint32_t *size
+) __asm__ (UCONCAT("MCS_GetVariable")) wu cstr(1) cstr(2) ro(1) ro(2) wo(3) wo(4) wo(5);
 
 /**
  * Retrieves information about a variable stored in the MCS.
@@ -134,11 +168,17 @@ int MCS_CreateFolder(const char *folder, uint8_t *folderIndex);
  * @return 0 if the variable exists, @c MCS_NO_VARIABLE if the variable does not
  * exist, or @c MCS_NO_FOLDER if the folder does not exist.
  */
-extern "C"
-int MCS_GetVariable(
+static inline wu cstr(1) cstr(2) ro(1) ro(2) wo(3) wo(4) wo(5) enum MCS_Error MCS_GetVariable(
 	const char *folder, const char *name,
-	uint8_t *variableType, char **name2, void **data, uint32_t *size
-);
+	enum MCS_VariableType *variableType, char **name2, void **data, uint32_t *size
+) {
+	return MCS_GetVariableU(folder, name, (uint8_t *)variableType, name2, data, size);
+}
+
+extern enum MCS_Error (*MCS_List_CreateU)(
+	const char *folder, const char *name,
+	uint32_t size, uint16_t length, uint8_t variableType
+) __asm__ (UCONCAT("MCS_List_Create")) wu cstr(1) cstr(2) ro(1) ro(2);
 
 /**
  * Creates a list variable in the MCS.
@@ -156,11 +196,17 @@ int MCS_GetVariable(
  * @return 0 on success, @c MCS_NO_FOLDER if the requested folder does not
  * exist.
  */
-extern "C"
-int MCS_List_Create(
+static inline wu cstr(1) cstr(2) ro(1) ro(2) enum MCS_Error MCS_List_Create(
 	const char *folder, const char *name,
-	uint32_t size, uint16_t length, uint8_t variableType
-);
+	uint32_t size, uint16_t length, enum MCS_VariableType variableType
+) {
+	return MCS_List_CreateU(folder, name, size, length, (uint8_t)variableType);
+}
+
+extern enum MCS_Error (*MCS_List_SetU)(
+	const char *folder, const char *name,
+	uint32_t size, unsigned int index, uint8_t variableType, void *data
+) __asm__ (UCONCAT("MCS_List_Set")) wu cstr(1) cstr(2) ro(1) ro(2) ro(6, 3);
 
 /**
  * Sets an element of a list in the MCS.
@@ -177,11 +223,17 @@ int MCS_List_Create(
  * if the variable was not a list, or @c MCS_INDEX_OOB if the index was out of
  * bounds.
  */
-extern "C"
-int MCS_List_Set(
+static inline wu cstr(1) cstr(2) ro(1) ro(2) ro(6, 3) enum MCS_Error MCS_List_Set(
 	const char *folder, const char *name,
-	uint32_t size, int index, uint8_t variableType, void *data
-);
+	uint32_t size, unsigned int index, enum MCS_VariableType variableType, void *data
+) {
+	return MCS_List_SetU(folder, name, size, index, (uint8_t)variableType, data);
+}
+
+extern enum MCS_Error (*MCS_SetVariableU)(
+	const char *folder, const char *name,
+	uint8_t variableType, uint32_t size, void *data
+) __asm__ (UCONCAT("MCS_SetVariable")) wu cstr(1) cstr(2) ro(1) ro(2) ro(5, 4);
 
 /**
  * Sets the value of a variable stored in the MCS. Can be used to create a new
@@ -199,8 +251,23 @@ int MCS_List_Set(
  * @return 0 if the variable was set successfully, or @c MCS_NO_FOLDER if the
  * specified folder does not exist.
  */
-extern "C"
-int MCS_SetVariable(
+static inline wu cstr(1) cstr(2) ro(1) ro(2) ro(5, 4) enum MCS_Error MCS_SetVariable(
 	const char *folder, const char *name,
-	uint8_t variableType, uint32_t size, void *data
-);
+	enum MCS_VariableType variableType, uint32_t size, void *data
+) {
+	return MCS_SetVariableU(folder, name, (uint8_t)variableType, size, data);
+}
+
+#undef cstr
+#undef ro
+#undef rw
+#undef wo
+#undef __UCONCAT
+#undef _UCONCAT
+#undef UCONCAT
+#undef wu
+#undef inline
+
+#ifdef __cplusplus
+}
+#endif

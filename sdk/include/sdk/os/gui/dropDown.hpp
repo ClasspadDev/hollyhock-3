@@ -1,5 +1,5 @@
 #pragma once
-#include <stdint.h>
+#include <cstdint>
 #include "util.hpp"
 
 class GUIDropDownMenuItem;
@@ -59,20 +59,3 @@ public:
 	GUIDropDownMenuItem(const char *s, int idx, int flags);
 };
 
-/// @cond INTERNAL
-extern "C"
-void *GUIDropDownMenu_ctor(
-	void *dropDownMenu,
-	uint16_t bounds[4],
-	uint16_t eventID, int flags1
-);
-
-extern "C"
-void *GUIDropDownMenuItem_ctor(
-	void *dropDownMenuItem,
-	int unk0, int unk1,
-	const char *text,
-	int index, int flags,
-	int unk2
-);
-/// @endcond

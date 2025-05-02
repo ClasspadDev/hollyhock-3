@@ -1,5 +1,17 @@
 #include <sdk/os/gui.hpp>
 
+/// @cond INTERNAL
+extern "C"
+struct GUITextBox_Wrapped *GUITextBox_ctor(
+	void *textBox,
+	int x, int y, int width,
+	const char *text,
+	int unknown0,
+	int flags,
+	int maxLength, bool countLengthByBytes
+);
+/// @endcond
+
 /**
  * Creates a text box.
  *

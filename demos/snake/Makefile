@@ -4,42 +4,44 @@ ifndef SDK_DIR
 $(error You need to define the SDK_DIR environment variable, and point it to the sdk/ folder)
 endif
 
-AS:=sh4aeb-elf-gcc
-AS_FLAGS:=
+AS:=sh4a_nofpueb-elf-gcc
+AS_FLAGS:=-mrelax
 
-CC:=sh4aeb-elf-gcc
-CC_FLAGS:=-ffreestanding -flto -ffunction-sections -fdata-sections -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/
+FUNCTION_FLAGS=-flto -ffat-lto-objects -ffunction-sections -fdata-sections -mrelax -O2 -gdwarf-5
 
-CXX:=sh4aeb-elf-g++
-CXX_FLAGS:=-ffreestanding -flto -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/
+CC:=sh4a_nofpueb-elf-gcc
+CC_FLAGS:=$(FUNCTION_FLAGS) -Wall -Wextra -I $(SDK_DIR)/include/
 
-LD:=sh4aeb-elf-g++
-LD_FLAGS:=-nostartfiles -Wall -Wextra -O2 -Wno-undef -Wl,--gc-sections -L$(SDK_DIR)
+CXX:=sh4a_nofpueb-elf-g++
+CXX_FLAGS:=$(FUNCTION_FLAGS) -Wall -Wextra -I $(SDK_DIR)/include/
 
-READELF:=sh4aeb-elf-readelf
-OBJCOPY:=sh4aeb-elf-objcopy
+LD:=sh4a_nofpueb-elf-g++
+LD_FLAGS:=$(FUNCTION_FLAGS) -Wl,--gc-sections -L$(SDK_DIR)
 
-AS_SOURCES:=$(wildcard *.s)
+READELF:=sh4a_nofpueb-elf-readelf
+OBJCOPY:=sh4a_nofpueb-elf-objcopy
+STRIP:=sh4a_nofpueb-elf-strip
+
+AS_SOURCES:=$(wildcard *.S)
 CC_SOURCES:=$(wildcard *.c)
 CXX_SOURCES:=$(wildcard *.cpp)
-OBJECTS:=$(AS_SOURCES:.s=.o) $(CC_SOURCES:.c=.o) $(CXX_SOURCES:.cpp=.o)
+OBJECTS:=$(AS_SOURCES:.S=.o) $(CC_SOURCES:.c=.o) $(CXX_SOURCES:.cpp=.o)
 
-APP_BIN:=$(APP_NAME).bin
 APP_ELF:=$(APP_NAME).elf
+APP_OUT:=$(APP_NAME).hh3
 
-bin: $(APP_BIN) Makefile
 elf: $(APP_ELF) Makefile
-
-all: $(APP_ELF) $(APP_BIN) Makefile
+hh3: $(APP_OUT) Makefile
+all: $(APP_ELF) $(APP_OUT) Makefile
 
 clean:
-	rm -f $(OBJECTS) $(APP_ELF) $(APP_BIN) $(APP_ELF).map
+	rm -f $(OBJECTS) $(APP_ELF) $(APP_ELF).map $(APP_OUT)
 
-$(APP_ELF): $(OBJECTS) $(SDK_DIR)/libsdk.a linker.ld
-	$(LD) -T linker.ld -Wl,-Map $@.map -o $@ $(LD_FLAGS) $(OBJECTS) -lsdk
+$(APP_ELF): $(OBJECTS) $(SDK_DIR)/libsdk.a
+	$(LD) -Wl,-Map $@.map -o $@ $(LD_FLAGS) $(OBJECTS) -lsdk
 
-$(APP_BIN): $(APP_ELF)
-	$(OBJCOPY) --output-target=binary --set-section-flags .bss=alloc,load,contents,data $< $@
+$(APP_OUT): $(APP_ELF)
+	$(STRIP) -o $@ $^
 
 # We're not actually building libsdk.a, just telling the user they need to do it
 # themselves. Just using the target to trigger an error when the file is
@@ -47,19 +49,13 @@ $(APP_BIN): $(APP_ELF)
 $(SDK_DIR)/libsdk.a:
 	echo "You need to build the SDK before using it. Run make in the SDK directory, and check the README.md in the SDK directory for more information" && exit 1
 
-%.o: %.s
+%.o: %.S
 	$(AS) -c $< -o $@ $(AS_FLAGS)
 
 %.o: %.c
-	$(CC) $< -o $@ $(CC_FLAGS)
+	$(CC) -c $< -o $@ $(CC_FLAGS)
 
-# Break the build if global constructors are present:
-# Read the sections from the object file (with readelf -S) and look for any
-# called .ctors - if they exist, give the user an error message, delete the
-# object file (so that on subsequent runs of make the build will still fail)
-# and exit with an error code to halt the build.
 %.o: %.cpp
 	$(CXX) -c $< -o $@ $(CXX_FLAGS)
-	@$(READELF) $@ -S | grep ".ctors" > /dev/null && echo "ERROR: Global constructors aren't supported." && rm $@ && exit 1 || exit 0
 
-.PHONY: all clean
+.PHONY: bin elf all clean

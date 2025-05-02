@@ -1,7 +1,7 @@
-#include <appdef.hpp>
-#include <sdk/os/debug.hpp>
-#include <sdk/os/input.hpp>
-#include <sdk/os/lcd.hpp>
+#include <appdef.h>
+#include <sdk/os/debug.h>
+#include <sdk/os/input.h>
+#include <sdk/os/lcd.h>
 
 APP_NAME("Input_IsAnyKeyDown/Input_GetKeyState Demo")
 APP_DESCRIPTION("Displayes the keycodes of pressed buttons.")
@@ -10,7 +10,7 @@ APP_VERSION("1.0.0")
 
 struct LUTEntry {
 	const char *str;
-	InputScancode scancode;
+	Input_Scancode scancode;
 };
 
 #define LUT_ENTRY(name) { #name, name }
@@ -54,8 +54,7 @@ struct LUTEntry lut[] = {
 };
 constexpr int numScancodes = sizeof(lut) / sizeof(lut[0]);
 
-extern "C"
-void main() {
+int main() {
     bool running = true;
     while (running) {
         LCD_ClearScreen();
@@ -76,7 +75,7 @@ void main() {
 
                 // Pass a pointer to the scancode to check into
                 // Input_GetKeyState
-                if (Input_GetKeyState(&lutEntry.scancode)) {
+                if (Input_GetKeyState(lutEntry.scancode)) {
                     // Print the name of the key that was pressed
                     Debug_Printf(
                         0, printY++, false, 0,
@@ -95,4 +94,5 @@ void main() {
 
         LCD_Refresh();
     }
+    return 0;
 }

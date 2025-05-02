@@ -1,7 +1,8 @@
-#include <appdef.hpp>
-#include <sdk/os/debug.hpp>
-#include <sdk/os/input.hpp>
-#include <sdk/os/lcd.hpp>
+#include <appdef.h>
+#include <sdk/os/debug.h>
+#include <sdk/os/input.h>
+#include <sdk/os/lcd.h>
+#include <sdk/calc/calc.h>
 
 APP_NAME("Snake")
 APP_DESCRIPTION("A simple implementation of the game Snake.")
@@ -21,9 +22,7 @@ APP_VERSION("1.0.0")
 #define DIRECTION_SOUTH 2
 #define DIRECTION_WEST 3
 
-extern uint16_t *vram;
-int lcdWidth, lcdHeight;
-int numBlocksX, numBlocksY;
+unsigned int numBlocksX, numBlocksY;
 
 // the snake's head is at position 0 in our list
 int snakeLength;
@@ -39,10 +38,10 @@ uint32_t fruitYLFSR;
 int fruitX;
 int fruitY;
 
-void drawBlock(int blockX, int blockY, uint16_t color) {
-	for (int x = blockX * BLOCK_SIZE; x < (blockX + 1) * BLOCK_SIZE; ++x) {
-		for (int y = blockY * BLOCK_SIZE; y < (blockY + 1) * BLOCK_SIZE; ++y) {
-			vram[x + (y + 24) * lcdWidth] = color;
+void drawBlock(unsigned int blockX, unsigned int blockY, uint16_t color) {
+	for (auto x = blockX * BLOCK_SIZE; x < (blockX + 1) * BLOCK_SIZE; ++x) {
+		for (auto y = blockY * BLOCK_SIZE; y < (blockY + 1) * BLOCK_SIZE; ++y) {
+			vram[x + (y + 24) * width] = color;
 		}
 	}
 }
@@ -51,7 +50,7 @@ void draw() {
 	Debug_SetCursorPosition(0, 0);
 	Debug_PrintString("Score: ", false);
 
-	char *num = "0000";
+	char num[] = "0000";
 	num[0] = (snakeLength / 1000) % 10 + '0';
 	num[1] = (snakeLength / 100) % 10 + '0';
 	num[2] = (snakeLength / 10) % 10 + '0';
@@ -59,8 +58,8 @@ void draw() {
 	Debug_PrintString(num, false);
 
 	// Draw the background
-	for (int blockY = 0; blockY < numBlocksY; ++blockY) {
-		for (int blockX = 0; blockX < numBlocksX; ++blockX) {
+	for (unsigned int blockY = 0; blockY < numBlocksY; ++blockY) {
+		for (unsigned int blockX = 0; blockX < numBlocksX; ++blockX) {
 			drawBlock(blockX, blockY, COLOR_BACKGROUND);
 		}
 	}
@@ -94,7 +93,7 @@ bool moveSnake() {
 	int newY = snakeY[0] + deltaY;
 
 	// if we've gone outside the grid
-	if (newX < 0 || newX >= numBlocksX || newY < 0 || newY >= numBlocksY) {
+	if (newX < 0 || static_cast<unsigned int>(newX) >= numBlocksX || newY < 0 || static_cast<unsigned int>(newY) >= numBlocksY) {
 		return false;
 	}
 
@@ -169,17 +168,9 @@ bool checkSnake() {
 	return !collidedWithSelf;
 }
 
-void main() {
-	LCD_VRAMBackup();
-
-	// Initialize our constants
-	LCD_ClearScreen();
-
-	vram = LCD_GetVRAMAddress();
-	LCD_GetSize(&lcdWidth, &lcdHeight);
-
-	numBlocksX = lcdWidth / BLOCK_SIZE;
-	numBlocksY = (lcdHeight - 24) / BLOCK_SIZE;
+int main() {
+	numBlocksX = width / BLOCK_SIZE;
+	numBlocksY = (height - 24) / BLOCK_SIZE;
 
 	snakeLength = 3;
 	for (int i = 0; i < snakeLength; ++i) {
@@ -192,9 +183,8 @@ void main() {
 	fruitYLFSR = 0xAF05432A;
 	moveFruit();
 
-	struct InputEvent event;
+	struct Input_Event event;
 
-	bool lost = false;
 	bool running = true;
 	while (running) {
 		draw();
@@ -206,14 +196,14 @@ void main() {
 			case EVENT_TIMER: //Defined in sdk/os/input.hpp scince 03/07/2021
 
 				if (!moveSnake()) {
-					lost = true;
 					running = false;
 				}
 
 				if (!checkSnake()) {
-					lost = true;
 					running = false;
 				}
+
+				break;
 
 			case EVENT_KEY:
 				switch (event.data.key.keyCode) {
@@ -240,13 +230,16 @@ void main() {
 				case KEYCODE_POWER_CLEAR:
 					running = false;
 					break;
+				default:
+					break;
 				}
+				break;
+			default:
 				break;
 		}
 	}
 
 	Debug_WaitKey();
 
-	LCD_VRAMRestore();
-	LCD_Refresh();
+	return 0;
 }

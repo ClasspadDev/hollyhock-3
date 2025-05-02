@@ -21,7 +21,9 @@ struct GUILongLabel_Wrapped {
 
     uint8_t unknown1[0x5C];
 };
+#ifndef __clang__
 static_assert(sizeof(struct GUILongLabel_Wrapped) == 0xAC);
+#endif
 
 class GUILongLabel : public GUIElement {
 public:
@@ -33,8 +35,3 @@ public:
     void SetText(const char *text);
     void Refresh();
 };
-
-/// @cond INTERNAL
-extern "C"
-void *GUILongLabel_ctor(void *longLabel, uint16_t bounds[4], int unk0, int unk1, const char *text, int unk2);
-/// @endcond

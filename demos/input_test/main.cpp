@@ -1,8 +1,8 @@
-#include <appdef.hpp>
-#include <sdk/os/debug.hpp>
-#include <sdk/os/input.hpp>
-#include <sdk/os/lcd.hpp>
-#include <sdk/os/mem.hpp>
+#include <appdef.h>
+#include <sdk/os/debug.h>
+#include <sdk/os/input.h>
+#include <sdk/os/lcd.h>
+#include <sdk/os/mem.h>
 
 APP_NAME("Input Test")
 APP_DESCRIPTION("Test of the GetInput function.")
@@ -56,8 +56,8 @@ void printHeader() {
 	Debug_PrintString("GetInput demo (clear=quit)", false);
 }
 
-void main() {
-	struct InputEvent event;
+int main() {
+	struct Input_Event event;
 
 	bool running = true;
 
@@ -183,10 +183,15 @@ void main() {
 			case EVENT_ACTBAR_SETTINGS:
 				Debug_PrintString("Settings", false);
 				break;
+			default:
+				__builtin_unreachable();
 			}
 
 			LCD_Refresh();
 			break;
+		default:
+			break;
 		}
 	}
+	return 0;
 }

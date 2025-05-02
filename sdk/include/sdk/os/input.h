@@ -7,62 +7,80 @@
  */
 
 #pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
+#include <stdbool.h>
 
-const uint16_t EVENT_KEY = 0x0017;
-const uint16_t EVENT_ACTBAR_RESIZE = 0x1003;
-const uint16_t EVENT_ACTBAR_SWAP = 0x1004;
-const uint16_t EVENT_ACTBAR_ROTATE = 0x1005;
-const uint16_t EVENT_ACTBAR_ESC = 0x3009;
-const uint16_t EVENT_ACTBAR_SETTINGS = 0x300A;
-const uint16_t EVENT_TOUCH = 0x4000;
-const uint16_t EVENT_TIMER = 0x0005;
+#define __UCONCAT(a, b) #a b
+#define _UCONCAT(a, b) __UCONCAT(a, b)
+#define UCONCAT(b) _UCONCAT(__USER_LABEL_PREFIX__, b)
 
-const uint32_t KEY_PRESSED = 1;
-const uint32_t KEY_HELD = 0x100;
-const uint32_t KEY_RELEASED = 0x40;
+enum Input_EventType {
+	EVENT_KEY = 0x0017,
+	EVENT_ACTBAR_RESIZE = 0x1003,
+	EVENT_ACTBAR_SWAP = 0x1004,
+	EVENT_ACTBAR_ROTATE = 0x1005,
+	EVENT_ACTBAR_ESC = 0x3009,
+	EVENT_ACTBAR_SETTINGS = 0x300A,
+	EVENT_TOUCH = 0x4000,
+	EVENT_TIMER = 0x0005
+};
 
-const uint16_t KEYCODE_KEYBOARD = 0x00B3;
-const uint16_t KEYCODE_SHIFT = 0x00A0;
-const uint16_t KEYCODE_BACKSPACE = 0x0097;
-const uint16_t KEYCODE_POWER_CLEAR = 0x0080;
-const uint16_t KEYCODE_UP = 0x0090;
-const uint16_t KEYCODE_DOWN = 0x0091;
-const uint16_t KEYCODE_LEFT = 0x0092;
-const uint16_t KEYCODE_RIGHT = 0x0093;
-const uint16_t KEYCODE_EQUALS = 0x003D;
-const uint16_t KEYCODE_X = 0xEDB8;
-const uint16_t KEYCODE_Y = 0xEDB9;
-const uint16_t KEYCODE_Z = 0xEDBA;
-const uint16_t KEYCODE_POWER = 0x005E;
-const uint16_t KEYCODE_DIVIDE = 0x002F;
-const uint16_t KEYCODE_OPEN_PARENTHESIS = 0x0028;
-const uint16_t KEYCODE_7 = 0x0037;
-const uint16_t KEYCODE_8 = 0x0038;
-const uint16_t KEYCODE_9 = 0x0039;
-const uint16_t KEYCODE_TIMES = 0xEE10;
-const uint16_t KEYCODE_CLOSE_PARENTHESIS = 0x0029;
-const uint16_t KEYCODE_4 = 0x0034;
-const uint16_t KEYCODE_5 = 0x0035;
-const uint16_t KEYCODE_6 = 0x0036;
-const uint16_t KEYCODE_MINUS = 0x002D;
-const uint16_t KEYCODE_COMMA = 0x002C;
-const uint16_t KEYCODE_1 = 0x0031;
-const uint16_t KEYCODE_2 = 0x0032;
-const uint16_t KEYCODE_3 = 0x0033;
-const uint16_t KEYCODE_PLUS = 0x002B;
-const uint16_t KEYCODE_NEGATIVE = 0x001F;
-const uint16_t KEYCODE_0 = 0x0030;
-const uint16_t KEYCODE_DOT = 0x002E;
-const uint16_t KEYCODE_EXP = 0x001D;
-const uint16_t KEYCODE_EXE = 0x0094;
+enum Input_KeyEventType {
+	KEY_PRESSED = 1,
+	KEY_HELD = 0x100,
+	KEY_RELEASED = 0x40
+};
 
-const uint32_t TOUCH_DOWN = 1;
-const uint32_t TOUCH_HOLD_DRAG = 2;
-const uint32_t TOUCH_ACT_BAR = 0x100;
-const uint32_t TOUCH_UP = 0x40;
+enum Input_Keycode {
+	KEYCODE_KEYBOARD = 0x00B3,
+	KEYCODE_SHIFT = 0x00A0,
+	KEYCODE_BACKSPACE = 0x0097,
+	KEYCODE_POWER_CLEAR = 0x0080,
+	KEYCODE_UP = 0x0090,
+	KEYCODE_DOWN = 0x0091,
+	KEYCODE_LEFT = 0x0092,
+	KEYCODE_RIGHT = 0x0093,
+	KEYCODE_EQUALS = 0x003D,
+	KEYCODE_X = 0xEDB8,
+	KEYCODE_Y = 0xEDB9,
+	KEYCODE_Z = 0xEDBA,
+	KEYCODE_POWER = 0x005E,
+	KEYCODE_DIVIDE = 0x002F,
+	KEYCODE_OPEN_PARENTHESIS = 0x0028,
+	KEYCODE_7 = 0x0037,
+	KEYCODE_8 = 0x0038,
+	KEYCODE_9 = 0x0039,
+	KEYCODE_TIMES = 0xEE10,
+	KEYCODE_CLOSE_PARENTHESIS = 0x0029,
+	KEYCODE_4 = 0x0034,
+	KEYCODE_5 = 0x0035,
+	KEYCODE_6 = 0x0036,
+	KEYCODE_MINUS = 0x002D,
+	KEYCODE_COMMA = 0x002C,
+	KEYCODE_1 = 0x0031,
+	KEYCODE_2 = 0x0032,
+	KEYCODE_3 = 0x0033,
+	KEYCODE_PLUS = 0x002B,
+	KEYCODE_NEGATIVE = 0x001F,
+	KEYCODE_0 = 0x0030,
+	KEYCODE_DOT = 0x002E,
+	KEYCODE_EXP = 0x001D,
+	KEYCODE_EXE = 0x0094
+};
 
-enum InputScancode : uint16_t {
+enum Input_TouchEventType {
+	TOUCH_DOWN = 1,
+	TOUCH_HOLD_DRAG = 2,
+	TOUCH_ACT_BAR = 0x100,
+	TOUCH_UP = 0x40
+};
+
+enum Input_Scancode {
 	ScancodeKeyboard = (7 << 8) | 5,
 	ScancodeShift = (7 << 8) | 1,
 	ScancodeBackspace = (7 << 8) | 2,
@@ -103,13 +121,13 @@ enum InputScancode : uint16_t {
  * Information about an input event returned from @ref GetInput. See
  * documentation for individual members for more information.
  */
-struct InputEvent {
+struct __attribute__((packed)) Input_Event {
 	/**
 	 * Code representing which event occurred. Events with a value for this
 	 * field which do not correspond to a macro beginning with @c EVENT_ must
 	 * be ignored.
 	 */
-	uint16_t type;
+	enum Input_EventType type : 16;
 	uint16_t zero;
 
 	/**
@@ -131,12 +149,12 @@ struct InputEvent {
 			 * The direction the key traveled. One of @c KEY_PRESSED,
 			 * @c KEY_HELD or @c KEY_RELEASED.
 			 */
-			uint32_t direction;
+			enum Input_KeyEventType direction : 32;
 
 			/**
 			 * The key code for the key. See macros beginning with @c KEYCODE_.
 			 */
-			uint16_t keyCode;
+			enum Input_Keycode keyCode : 16;
 		} key;
 
 		struct {
@@ -144,7 +162,7 @@ struct InputEvent {
 			 * The direction of the touch. One of @c TOUCH_DOWN,
 			 * @c TOUCH_HOLD_DRAG, @c TOUCH_ACT_BAR, or @c TOUCH_UP.
 			 */
-			uint32_t direction;
+			enum Input_TouchEventType direction : 32;
 
 			/**
 			 * The X position of the cursor, in screen pixels. May be negative
@@ -170,7 +188,7 @@ struct InputEvent {
 		} touch_single;
 
 		struct {
-			uint32_t direction;
+			enum Input_TouchEventType direction : 32;
 
 			int32_t p1_x;
 			int32_t p1_y;
@@ -205,8 +223,17 @@ struct InputEvent {
  * @param unknown2 An unknown value. The value @c 0x10 must be supplied.
  * @return Always returns 0.
  */
-extern "C"
-int GetInput(struct InputEvent *event, uint32_t unknown1, uint32_t unknown2);
+extern int (*GetInput)(struct Input_Event *event, uint32_t unknown1, uint32_t unknown2)
+#ifndef __clang__
+__attribute__((access(write_only, 1)))
+#endif
+;
+
+extern bool (*Input_GetKeyStateU)(uint16_t *scancode) __asm__ (UCONCAT("Input_GetKeyState"))
+#ifndef __clang__
+__attribute__((access(read_only, 1)))
+#endif
+;
 
 /**
  * Returns true if the specified key is currently down.
@@ -214,13 +241,21 @@ int GetInput(struct InputEvent *event, uint32_t unknown1, uint32_t unknown2);
  * @param[in] scanCode The scancode of the key to check.
  * @returns True if the key is down, false otherwise.
  */
-extern "C"
-bool Input_GetKeyState(InputScancode *scancode);
+static inline __attribute__((always_inline)) bool Input_GetKeyState(enum Input_Scancode scanCode) {
+	return Input_GetKeyStateU((uint16_t *)&scanCode);
+}
 
 /**
  * Returns true if any key on the keyboard is currently down.
  * 
  * @returns True if a key is pressed, false otherwise.
  */
-extern "C"
-bool Input_IsAnyKeyDown();
+extern bool (*Input_IsAnyKeyDown)();
+
+#undef __UCONCAT
+#undef _UCONCAT
+#undef UCONCAT
+
+#ifdef __cplusplus
+}
+#endif

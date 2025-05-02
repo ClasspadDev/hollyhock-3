@@ -1,7 +1,7 @@
-#include <appdef.hpp>
-#include <sdk/calc/calc.hpp>
-#include <sdk/os/lcd.hpp>
-#include <sdk/os/debug.hpp>
+#include <appdef.h>
+#include <sdk/calc/calc.h>
+#include <sdk/os/lcd.h>
+#include <sdk/os/debug.h>
 
 /*
  * Fill this section in with some information about your app.
@@ -12,10 +12,7 @@ APP_DESCRIPTION("A short description of my app")
 APP_AUTHOR("My name")
 APP_VERSION("1.0.2")
 
-extern "C"
-void main() {
-	calcInit(); //backup screen and init some variables
-
+int main() {
 	// Put your app's code here!
 
 	//Example for fillScreen(color);
@@ -38,12 +35,12 @@ void main() {
 		}
 	}
 
-	//Example for triangle(x0,y0,x1,y1,x2,y2,colorFill,colorLine);
-	triangle(10,20,40,250,300,100,color(0,255,0),color(0,0,255));
-
 	//Example for line(x1,y1,x2,y2,color);
 	line(100,30,290,500,color(255,0,0));      //Use RGB color
 	line(110,30,300,500,0b1111100000000000);  //Or use 565 color
+
+	//Example for triangle(x0,y0,x1,y1,x2,y2,colorFill,colorLine);
+	triangle(10,20,40,250,300,100,color(0,255,0),color(0,0,255));
 
 	//Don't forget to do LCD_Refresh after setPixel(); line(); and triangle();
 	LCD_Refresh();
@@ -57,5 +54,5 @@ void main() {
 		}
 	}
 
-	calcEnd(); //restore screen and do stuff
+	return 0;
 }

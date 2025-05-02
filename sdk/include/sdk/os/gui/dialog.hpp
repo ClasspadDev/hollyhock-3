@@ -1,5 +1,5 @@
 #pragma once
-#include <stdint.h>
+#include <cstdint>
 #include "util.hpp"
 
 // pre-declare the class, since a pointer to it is placed in the vtable
@@ -65,7 +65,9 @@ struct GUIDialog_Wrapped {
 
 	uint8_t unknown2[0x58];
 };
+#ifndef __clang__
 static_assert(sizeof(struct GUIDialog_Wrapped) == 0xA8);
+#endif
 
 struct GUIDialog_OnEvent_Data {
 	uint16_t type;
@@ -146,14 +148,3 @@ private:
 
 	static int OnEvent_Wrap(struct GUIDialog_Wrapped *dialog, struct GUIDialog_OnEvent_Data *event);
 };
-
-/// @cond INTERNAL
-extern "C"
-struct GUIDialog_Wrapped *GUIDialog_ctor(
-	void *dialog,
-	int height, int alignment,
-	const char *title,
-	int unknown2, int unknown3,
-	int keyboard
-);
-/// @endcond

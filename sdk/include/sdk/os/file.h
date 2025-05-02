@@ -57,65 +57,91 @@
  */
 
 #pragma once
+
+#include <cstdint>
+#ifdef __cplusplus
+extern "C" {
+#else
+#define constexpr
+#endif
+
 #include <stdint.h>
+#include <stddef.h>
+
+#ifndef __clang__
+#define cstr(x) __attribute__((null_terminated_string_arg(x)))
+#define ro(...) __attribute__((access(read_only, __VA_ARGS__)))
+#define rw(...) __attribute__((access(read_write, __VA_ARGS__)))
+#define wo(...) __attribute__((access(write_only, __VA_ARGS__)))
+#else
+#define cstr(x)
+#define ro(...)
+#define rw(...)
+#define wo(...)
+#endif
+
+#define wu __attribute__((warn_unused_result))
+
+// You don't want to work with these
+// but this is the only way to get
+// them relieably right
+typedef uint16_t char_const16_t;
 
 /**
- * @name Errors
  * Errors returned by file system functions. All negative numbers.
- * @{
  */
-const int FILE_ENOMEM = -1;
-const int FILE_EINVAL = -2;
-const int FILE_EDEVFAIL = -3;
-const int FILE_EMOUNTED = -4;
-const int FILE_EACCES = -5;
-const int FILE_EBADFSID = -6;
-const int FILE_ENOVOLUME = -7;
-const int FILE_ENOPATH = -8;
-const int FILE_EEXIST = -9;
-const int FILE_ENAMETOOLONG = -10;
-const int FILE_EOUTOFBOUND = -11;
-const int FILE_EUNFORMAT = -12;
-const int FILE_ENOSPC = -13;
-const int FILE_ENOENT = -14;
-const int FILE_EISDIRECTORY = -15;
-const int FILE_ESHARE = -16;
-const int FILE_EMFILE = -17;
-const int FILE_EBADF = -18;
-const int FILE_EEOF = -19;
-const int FILE_ENOTEMPTY = -20;
-const int FILE_ECLUSTERSIZEMISMATCH = -40;
-const int FILE_ESYSTEM = -99;
-/// @}
+enum File_Error {
+	FILE_OK = 0,
+	FILE_ENOMEM = -1,
+	FILE_EINVAL = -2,
+	FILE_EDEVFAIL = -3,
+	FILE_EMOUNTED = -4,
+	FILE_EACCES = -5,
+	FILE_EBADFSID = -6,
+	FILE_ENOVOLUME = -7,
+	FILE_ENOPATH = -8,
+	FILE_EEXIST = -9,
+	FILE_ENAMETOOLONG = -10,
+	FILE_EOUTOFBOUND = -11,
+	FILE_EUNFORMAT = -12,
+	FILE_ENOSPC = -13,
+	FILE_ENOENT = -14,
+	FILE_EISDIRECTORY = -15,
+	FILE_ESHARE = -16,
+	FILE_EMFILE = -17,
+	FILE_EBADF = -18,
+	FILE_EEOF = -19,
+	FILE_ENOTEMPTY = -20,
+	FILE_ECLUSTERSIZEMISMATCH = -40,
+	FILE_ESYSTEM = -99
+};
 
 /**
- * @defgroup lseek_whence_values lseek whence Values
  * Values passed as the @c whence parameter to @ref File_Lseek.
- * @{
  */
-/// Set the file offset to @c offset.
-const int FILE_SEEK_SET = 0;
-/// Set the file offset to the current position, plus @c offset bytes.
-const int FILE_SEEK_CUR = 1;
-///Set the file offset to the end of the file, plus @c offset bytes.
-const int FILE_SEEK_END = 2;
-/// @}
+enum File_Whence {
+	/// Set the file offset to @c offset.
+	FILE_SEEK_SET = 0,
+	/// Set the file offset to the current position, plus @c offset bytes.
+	FILE_SEEK_CUR = 1,
+	///Set the file offset to the end of the file, plus @c offset bytes.
+	FILE_SEEK_END = 2
+};
 
 /**
- * @defgroup open_flags_values open flags Values
  * Values passed as the @c flags parameter to @ref File_Open. Can be bitwise OR'd to
  * combine effects.
- * @{
  */
-/// Open the file as readable.
-const int FILE_OPEN_READ = 1 << 0;
-/// Open the file as writable.
-const int FILE_OPEN_WRITE = 1 << 1;
-/// Create the file, if it does not already exist.
-const int FILE_OPEN_CREATE = 1 << 2;
-/// Opens the file with the file offset set to the end of the file.
-const int FILE_OPEN_APPEND = 1 << 4;
-/// @}
+enum File_Open {
+	/// Open the file as readable.
+	FILE_OPEN_READ = 1 << 0,
+	/// Open the file as writable.
+	FILE_OPEN_WRITE = 1 << 1,
+	/// Create the file, if it does not already exist.
+	FILE_OPEN_CREATE = 1 << 2,
+	/// Opens the file with the file offset set to the end of the file.
+	FILE_OPEN_APPEND = 1 << 4
+};
 
 /**
  * Retrieves the year from a @c struct @ref File_Stat date field.
@@ -123,8 +149,8 @@ const int FILE_OPEN_APPEND = 1 << 4;
  * @param date The date field from a @c struct @ref File_Stat.
  * @return The year encoded in the date field.
  */
-uint16_t constexpr File_StatDateYear(uint16_t date) {
-	return ((date >> 9) & 0b1111111) + 1980;
+static inline __attribute__((pure)) uint16_t constexpr File_StatDateYear(uint16_t date) {
+	return ((date >> 9) & 0x7F) + 1980;
 }
 
 /**
@@ -133,8 +159,8 @@ uint16_t constexpr File_StatDateYear(uint16_t date) {
  * @param date The date field from a @c struct @ref File_Stat.
  * @return The month encoded in the date field.
  */
-uint16_t constexpr File_StatDateMonth(uint16_t date) {
-	return (date >> 5) & 0b1111;
+static inline __attribute__((pure)) uint16_t constexpr File_StatDateMonth(uint16_t date) {
+	return (date >> 5) & 0xF;
 }
 
 /**
@@ -143,8 +169,8 @@ uint16_t constexpr File_StatDateMonth(uint16_t date) {
  * @param date The date field from a @c struct @ref File_stat.
  * @return The day encoded in the date field.
  */
-uint16_t constexpr File_StatDateDay(uint16_t date) {
-	return date & 0b11111;
+static inline __attribute__((pure)) uint16_t constexpr File_StatDateDay(uint16_t date) {
+	return date & 0x1F;
 }
 
 /**
@@ -153,8 +179,8 @@ uint16_t constexpr File_StatDateDay(uint16_t date) {
  * @param time The time field from a @c struct @ref File_Stat.
  * @return The hour encoded in the time field.
  */
-uint16_t constexpr File_StatTimeHour(uint16_t time) {
-	return (time >> 11) & 0b11111;
+static inline __attribute__((pure)) uint16_t constexpr File_StatTimeHour(uint16_t time) {
+	return (time >> 11) & 0x1F;
 }
 
 /**
@@ -163,8 +189,8 @@ uint16_t constexpr File_StatTimeHour(uint16_t time) {
  * @param time The time field from a @c struct @ref File_Stat.
  * @return The minute encoded in the time field.
  */
-uint16_t constexpr File_StatTimeMinute(uint16_t time) {
-	return (time >> 5) & 0b111111;
+static inline __attribute__((pure)) uint16_t constexpr File_StatTimeMinute(uint16_t time) {
+	return (time >> 5) & 0x3F;
 }
 
 /**
@@ -175,8 +201,8 @@ uint16_t constexpr File_StatTimeMinute(uint16_t time) {
  * @param time The time field from a @c struct @ref File_Stat.
  * @return The second encoded in the time field.
  */
-uint16_t constexpr File_StatTimeSecond(uint16_t time) {
-	return (time & 0b11111) * 2;
+static inline __attribute__((pure)) uint16_t constexpr File_StatTimeSecond(uint16_t time) {
+	return (time & 0x1F) * 2;
 }
 
 /**
@@ -290,14 +316,14 @@ struct File_Stat {
  * Information about a file/directory, as returned from @ref findFirst or
  * @ref findNext.
  */
-struct File_FindInfo {
+struct __attribute__((packed)) File_FindInfo {
 	uint8_t unknown0[4];
 
 	/// The type of entry which was located.
-	enum : uint16_t {
+	enum {
 		EntryTypeFile = 0x1,
 		EntryTypeDirectory = 0x5
-	} type;
+	} type : 16;
 
 	uint8_t unknown1[2];
 	
@@ -316,8 +342,7 @@ struct File_FindInfo {
  * @param fd The file descriptor for the open file.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_Close(int fd);
+extern enum File_Error (*File_Close)(int fd);
 
 /**
  * Closes a find handle.
@@ -327,8 +352,7 @@ int File_Close(int fd);
  * @param findHandle The find handle to close.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_FindClose(int findHandle);
+extern enum File_Error (*File_FindClose)(int findHandle);
 
 /**
  * Starts a find operation, locating files matching a specific path.
@@ -349,8 +373,7 @@ int File_FindClose(int findHandle);
  * @param[out] findInfoBuf Information about the found file.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_FindFirst(const wchar_t *path, int *findHandle, wchar_t *name, struct File_FindInfo *findInfoBuf);
+extern enum File_Error (*File_FindFirst)(const char_const16_t *path, int *findHandle, char_const16_t *name, struct File_FindInfo *findInfoBuf) wu cstr(1) ro(1) wo(2) wo(3) wo(4);
 
 /**
  * Returns information about the next matching file/directory in a find
@@ -361,8 +384,7 @@ int File_FindFirst(const wchar_t *path, int *findHandle, wchar_t *name, struct F
  * @param[out] findInfoBuf Information about the found file.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_FindNext(int findHandle, wchar_t *name, struct File_FindInfo *findInfoBuf);
+extern enum File_Error (*File_FindNext)(int findHandle, char_const16_t *name, struct File_FindInfo *findInfoBuf) wu wo(2) wo(3);
 
 /**
  * Retrieves information about an open file.
@@ -371,8 +393,7 @@ int File_FindNext(int findHandle, wchar_t *name, struct File_FindInfo *findInfoB
  * @param[out] buf The retrieved information about the file.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_Fstat(int fd, struct File_Stat *buf);
+extern enum File_Error (*File_Fstat)(int fd, struct File_Stat *buf) wu wo(2);
 
 /**
  * Retrieves the memory address of a file.
@@ -385,8 +406,7 @@ int File_Fstat(int fd, struct File_Stat *buf);
  * @param[out] addr The address of the file's data.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_GetAddr(int fd, int offset, const void **addr);
+extern enum File_Error (*File_GetAddr)(int fd, int offset, const void **addr) wu wo(3);
 
 /**
  * Repositions the file offset of the file descriptor. The new position depends
@@ -397,8 +417,7 @@ int File_GetAddr(int fd, int offset, const void **addr);
  * @param whence Where @p offset is relative to.
  * @return The new file offset on success, or a negative error code on failure.
  */
-extern "C"
-int File_Lseek(int fd, int offset, int whence);
+extern int (*File_Lseek)(int fd, int offset, enum File_Whence whence) wu;
 
 /**
  * Creates a directory.
@@ -406,8 +425,7 @@ int File_Lseek(int fd, int offset, int whence);
  * @param[in] path The path to the directory to be created.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_Mkdir(const char *path);
+extern enum File_Error (*File_Mkdir)(const char *path) wu cstr(1) ro(1);
 
 /**
  * Opens a file on the file system.
@@ -419,8 +437,7 @@ int File_Mkdir(const char *path);
  * @param flags A bitfield describing the mode in which to open the file.
  * @return A file descriptor on success, or a negative error code on failure.
  */
-extern "C"
-int File_Open(const char *path, int flags);
+extern int (*File_Open)(const char *path, int flags) wu cstr(1) ro(1);
 
 /**
  * Reads up to @c count bytes from a file, and stores them in @c buf.
@@ -434,8 +451,7 @@ int File_Open(const char *path, int flags);
  * @return The number of bytes read on success, or a negative error code on
  * failure.
  */
-extern "C"
-int File_Read(int fd, void *buf, int count);
+extern int (*File_Read)(int fd, void *buf, int count) wu wo(2, 3);
 
 /**
  * Deletes a file or directory.
@@ -443,8 +459,7 @@ int File_Read(int fd, void *buf, int count);
  * @param[in] path The path to the file or directory to be deleted.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_Remove(const char *path);
+extern enum File_Error (*File_Remove)(const char *path) cstr(1) ro(1);
 
 /**
  * Renames a file or directory.
@@ -453,8 +468,7 @@ int File_Remove(const char *path);
  * @param[in] newPath The path to the new name for the file or directory.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_Rename(const char *oldPath, const char *newPath);
+extern enum File_Error (*File_Rename)(const char *oldPath, const char *newPath) wu cstr(1) cstr(2) ro(1) ro(2);
 
 /**
  * Retrieves information about a file.
@@ -463,8 +477,7 @@ int File_Rename(const char *oldPath, const char *newPath);
  * @param[out] buf The retrieved information about the file.
  * @return 0 on success, or a negative error code on failure.
  */
-extern "C"
-int File_Stat(const char *path, struct File_Stat *buf);
+extern enum File_Error (*File_Stat)(const char *path, struct File_Stat *buf) wu cstr(1) ro(1) wo(2);
 
 /**
  * Writes @c count bytes from @c buf to a file.
@@ -475,5 +488,16 @@ int File_Stat(const char *path, struct File_Stat *buf);
  * @return The number of bytes written on success, or a negative error code on
  * failure.
  */
-extern "C"
-int File_Write(int fd, const void *buf, int count);
+extern int (*File_Write)(int fd, const void *buf, int count) wu ro(2, 3);
+
+#undef cstr
+#undef ro
+#undef rw
+#undef wo
+#undef wu
+
+#ifdef __cplusplus
+}
+#else
+#undef constexpr
+#endif

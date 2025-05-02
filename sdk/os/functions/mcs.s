@@ -1,7 +1,0 @@
-.include "os/functions/_util.inc"
-
-DEFINE_OS_FUNC MCS_CreateFolder 0x800774d8
-DEFINE_OS_FUNC MCS_GetVariable 0x800776be
-DEFINE_OS_FUNC MCS_List_Create 0x8012bd3a
-DEFINE_OS_FUNC MCS_List_Set 0x8012c09c
-DEFINE_OS_FUNC MCS_SetVariable 0x8007775c

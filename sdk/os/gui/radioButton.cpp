@@ -1,5 +1,18 @@
 #include <sdk/os/gui.hpp>
 
+/// @cond INTERNAL
+extern "C"
+void *GUIRadioButton_ctor(
+	void *radioButton,
+	int x, int y,
+	const char *text,
+	int unknown0,
+	int flags,
+	void *font,
+	int unknown2
+);
+/// @endcond
+
 /**
  * Creates a radio button.
  * 

@@ -1,26 +1,25 @@
 DOXYGEN=doxygen
 
-AS:=sh4aeb-elf-gcc
-AS_FLAGS:=
+CC:=sh4a_nofpueb-elf-g++
+CC_FLAGS=-flto -ffat-lto-objects -ffunction-sections -fdata-sections -Wall -Wextra -Wno-prio-ctor-dtor -pedantic -Werror -pedantic-errors -std=c++20 -gdwarf-5 -Os -mrelax -I include/
 
-CC:=sh4aeb-elf-g++
-
-CC_FLAGS:=-ffreestanding -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -m4a-nofpu -Wall -Wextra -Os -I include/
-
-AR:=sh4aeb-elf-ar
+AR:=sh4a_nofpueb-elf-ar
 AR_FLAGS:=src
 
-AS_SOURCES:=$(wildcard *.s) $(wildcard **/*.s) $(wildcard **/**/*.s)
-CC_SOURCES:=$(wildcard *.cpp) $(wildcard **/*.cpp) $(wildcard **/**/*.cpp)
-OBJECTS:=$(AS_SOURCES:.s=.o) $(CC_SOURCES:.cpp=.o)
+CC_SOURCES:=$(shell find . -type f -name '*.cpp')
+CC_NOLTO_SOURCES:=$(shell find . -type f -name '*.cpp' -path '*/nolto/*')
+OBJECTS:=$(CC_SOURCES:.cpp=.o)
+CC_NOLTO_OBJECTS:=$(CC_NOLTO_SOURCES:.cpp=.o)
 
-all: libsdk.a sdk.o Makefile
+all: libsdk.a Makefile
+
+$(CC_NOLTO_OBJECTS): CC_FLAGS+=-fno-lto
 
 docs:
 	$(DOXYGEN)
 
 clean:
-	rm -f $(OBJECTS) libsdk.a sdk.o
+	rm -f $(OBJECTS) libsdk.a
 
 clean_docs:
 	rm -rf doc/
@@ -29,9 +28,6 @@ libsdk.a: $(OBJECTS)
 
 lib%.a:
 	$(AR) $(AR_FLAGS) $@ $^
-
-%.o: lib%.a
-	ln -s $< $@
 
 %.o: %.s
 	$(AS) -c $< -o $@ $(AS_FLAGS)

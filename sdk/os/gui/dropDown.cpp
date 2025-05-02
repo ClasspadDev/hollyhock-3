@@ -1,5 +1,23 @@
 #include <sdk/os/gui.hpp>
 
+/// @cond INTERNAL
+extern "C"
+void *GUIDropDownMenu_ctor(
+	void *dropDownMenu,
+	uint16_t bounds[4],
+	uint16_t eventID, int flags1
+);
+
+extern "C"
+void *GUIDropDownMenuItem_ctor(
+	void *dropDownMenuItem,
+	int unk0, int unk1,
+	const char *text,
+	int index, int flags,
+	int unk2
+);
+/// @endcond
+
 /**
  * Creates a drop down menu.
  * 

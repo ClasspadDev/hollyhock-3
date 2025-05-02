@@ -108,9 +108,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
         
-    - name: build the launcher
-      run: make -j -C launcher
-      
     - name: build the example
       run: make -j -C app_template
       
@@ -123,4 +120,5 @@ jobs:
           **/*.elf
           **/*.map
           **/*.bin
+          **/*.hh3
           !patches/**

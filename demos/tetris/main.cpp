@@ -1,8 +1,8 @@
-#include <appdef.hpp>
-#include <sdk/os/debug.hpp>
-#include <sdk/os/input.hpp>
-#include <sdk/os/lcd.hpp>
-#include <sdk/os/mem.hpp>
+#include <appdef.h>
+#include <sdk/os/debug.h>
+#include <sdk/os/input.h>
+#include <sdk/os/lcd.h>
+#include <sdk/os/mem.h>
 //320x520 -> 16x26 (20px x 20px) -> 12x22
 
 APP_NAME("Tetris")
@@ -14,7 +14,7 @@ void print_score(uint32_t score){	//prints to score to the top of the screen
 	Debug_SetCursorPosition(7, 0);
 	Debug_PrintString("Score: ", false);
 
-	char *num = "0000";
+	char num[] = "0000";
 	num[0] = (score / 1000) % 10 + '0';
 	num[1] = (score / 100) % 10 + '0';
 	num[2] = (score / 10) % 10 + '0';
@@ -36,13 +36,13 @@ void draw_square(unsigned int x, unsigned int y, uint8_t color_index){	//draws o
 		y = y * 20 + 41;
 		for(int i = 0; i < 18; i++){
 			for(int j = 0; j < 18; j++){
-				LCD_SetPixelFromPalette(x + i, y + j, color_index);
+				LCD_SetPixelFromPaletteU(x + i, y + j, color_index);
 			}
 		}
 	}
 }
 
-void main() {
+int main() {
 	uint32_t rand = 0;	//used to save random numbers. the last number is used as the seed for the next number
 	uint32_t score = 0;
 	uint32_t wait_down = 0;		//counter for the cycles until the block moves down one field
@@ -92,7 +92,7 @@ void main() {
 		}
 	};
 	
-	struct InputEvent event;
+	struct Input_Event event;
 	
 	bool running = true;
 	bool down = false;	//should block go down fast?
@@ -110,8 +110,6 @@ void main() {
 	unsigned char pos_y = 0;	//position of the active block
 	unsigned char rot = 0;		//rotation of the active block
 	unsigned char block_type = 0;		//type of the active block
-	
-	LCD_VRAMBackup();
 
 	LCD_ClearScreen();
 	LCD_Refresh();
@@ -396,6 +394,5 @@ void main() {
 	LCD_Refresh();
 	Debug_WaitKey();
 
-	LCD_VRAMRestore();
-	LCD_Refresh();
+	return 0;
 }

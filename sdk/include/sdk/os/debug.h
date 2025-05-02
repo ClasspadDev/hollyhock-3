@@ -33,15 +33,20 @@
  */
 
 #pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * Returns the current position of the cursor in debug text mode.
  * 
  * @param[out] x,y The position of the cursor.
  */
-extern "C"
-void Debug_GetCursorPosition(int *x, int *y);
+extern void (*Debug_GetCursorPosition)(unsigned int *x, unsigned int *y);
 
 /**
  * Print a formatted string in small debug text mode, either in normal
@@ -56,8 +61,11 @@ void Debug_GetCursorPosition(int *x, int *y);
  * @param[in] format The format string to use.
  * @param ... The values to substitute into the format string.
  */
-extern "C"
-void Debug_Printf(int x, int y, bool invert, int zero, const char *format, ...);
+extern void (*Debug_Printf)(unsigned int x, unsigned int y, bool invert, int zero, const char *format, ...) __attribute__((format(printf, 5, 6)
+#ifndef __clang__
+, access(read_only, 5), null_terminated_string_arg(5)
+#endif
+));
 
 /**
  * Prints the hex representation of a byte (8-bit number) at the specified
@@ -66,8 +74,7 @@ void Debug_Printf(int x, int y, bool invert, int zero, const char *format, ...);
  * @param value The byte to print.
  * @param x,y The coordinates to print the number at.
  */
-extern "C"
-void Debug_PrintNumberHex_Byte(uint8_t value, int x, int y);
+extern void (*Debug_PrintNumberHex_Byte)(uint8_t value, unsigned int x, unsigned int y);
 
 /**
  * Prints the hex representation of a dword (32-bit number) at the specified
@@ -76,8 +83,7 @@ void Debug_PrintNumberHex_Byte(uint8_t value, int x, int y);
  * @param value The dword to print.
  * @param x,y The coordinates to print the number at.
  */
-extern "C"
-void Debug_PrintNumberHex_Dword(uint32_t value, int x, int y);
+extern void (*Debug_PrintNumberHex_Dword)(uint32_t value, unsigned int x, unsigned int y);
 
 /**
  * Prints the hex representation of a nibble (4-bit number) at the specified
@@ -86,8 +92,7 @@ void Debug_PrintNumberHex_Dword(uint32_t value, int x, int y);
  * @param value The nibble to print. High 4 bits are ignored.
  * @param x,y The coordinates to print the number at.
  */
-extern "C"
-void Debug_PrintNumberHex_Nibble(uint8_t value, int x, int y);
+extern void (*Debug_PrintNumberHex_Nibble)(uint8_t value, unsigned int x, unsigned int y);
 
 /**
  * Prints the hex representation of a word (16-bit number) at the specified
@@ -96,8 +101,7 @@ void Debug_PrintNumberHex_Nibble(uint8_t value, int x, int y);
  * @param value The word to print.
  * @param x,y The coordinates to print the number at.
  */
-extern "C"
-void Debug_PrintNumberHex_Word(uint16_t value, int x, int y);
+extern void (*Debug_PrintNumberHex_Word)(uint16_t value, unsigned int x, unsigned int y);
 
 /**
  * Prints a string in debug text mode, either in normal black-on-white or
@@ -109,8 +113,11 @@ void Debug_PrintNumberHex_Word(uint16_t value, int x, int y);
  * @param invert True if the colors used to print the text should be inverted.
  * @return True if writing the string was successful, false otherwise.
  */
-extern "C"
-bool Debug_PrintString(const char *string, bool invert);
+extern bool (*Debug_PrintString)(const char *string, bool invert) 
+#ifndef __clang__
+__attribute__((null_terminated_string_arg(1)))
+#endif
+;
 
 /**
  * Sets the position of the cursor in debug text mode.
@@ -118,15 +125,18 @@ bool Debug_PrintString(const char *string, bool invert);
  * @param x,y The cursor's new position.
  * @return Always returns 0.
  */
-extern "C"
-int Debug_SetCursorPosition(int x, int y);
+extern int (*Debug_SetCursorPosition)(unsigned int x, unsigned int y);
 
 /**
  * Waits until a key is pressed, then returns a number representing the key.
  * Only appears to react to number keys and the Power/Clear key. Returns 0x30
  * to 0x39 for keys 0 to 9, and 0x98 for the Power/Clear key.
+ * NEW in 7002: also returns on touch events.
  * 
  * @return A number representing the key that was pressed.
  */
-extern "C"
-int Debug_WaitKey();
+extern int (*Debug_WaitKey)();
+
+#ifdef __cplusplus
+}
+#endif
