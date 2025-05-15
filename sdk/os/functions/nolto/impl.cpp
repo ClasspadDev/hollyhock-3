@@ -11,6 +11,7 @@ struct symbol_entry {
 #define REGISTER_SYMBOL(name) symbol_entry name = { (void *)(0xDEAD0001 + __LINE__ * 2), #name};
 
 // debug
+REGISTER_SYMBOL(DEBUG_FONTBASE)
 REGISTER_SYMBOL(Debug_GetCursorPosition)
 REGISTER_SYMBOL(Debug_Printf)
 REGISTER_SYMBOL(Debug_PrintNumberHex_Byte)
@@ -64,6 +65,8 @@ REGISTER_SYMBOL(LCD_SetPixel)
 REGISTER_SYMBOL(LCD_SetPixelFromPalette)
 REGISTER_SYMBOL(LCD_VRAMBackup)
 REGISTER_SYMBOL(LCD_VRAMRestore)
+REGISTER_SYMBOL(LCD_SendCommand)
+REGISTER_SYMBOL(LCD_SetDrawingBounds)
 
 // mcs
 REGISTER_SYMBOL(MCS_CreateFolder)
@@ -103,6 +106,7 @@ REGISTER_SYMBOL(String_Strlen)
 
 static symbol_entry * const symbols[] {
     // debug
+    &DEBUG_FONTBASE,
     &Debug_GetCursorPosition,
     &Debug_Printf,
     &Debug_PrintNumberHex_Byte,
@@ -156,6 +160,8 @@ static symbol_entry * const symbols[] {
     &LCD_SetPixelFromPalette,
     &LCD_VRAMBackup,
     &LCD_VRAMRestore,
+    &LCD_SendCommand,
+    &LCD_SetDrawingBounds,
 
     // mcs
     &MCS_CreateFolder,

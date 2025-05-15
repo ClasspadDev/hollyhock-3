@@ -36,10 +36,20 @@
 
 #ifdef __cplusplus
 extern "C" {
+#else
+#define constexpr const
 #endif
 
 #include <stdint.h>
 #include <stdbool.h>
+
+// from debug.h in newlib-cp2
+constexpr unsigned int debug_char_width = 8;
+constexpr unsigned int debug_char_height = 12;
+constexpr unsigned int debug_line_height = 14;
+constexpr unsigned int debug_max_columns = 40;
+constexpr unsigned int debug_max_rows = 37;
+extern uint16_t *DEBUG_FONTBASE;
 
 /**
  * Returns the current position of the cursor in debug text mode.

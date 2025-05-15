@@ -238,6 +238,16 @@
       "endAddress": "0x8002D438"
     },
     {
+      "FunctionName": "LCD_SendCommand",
+      "startAddress": "0x80038040",
+      "endAddress": "0x80038066"
+    },
+    {
+      "FunctionName": "LCD_SetDrawingBounds",
+      "startAddress": "0x80038068",
+      "endAddress": "0x800380DA"
+    },
+    {
       "FunctionName": "MCS_CreateFolder",
       "startAddress": "0x8007689C",
       "endAddress": "0x8007692A"

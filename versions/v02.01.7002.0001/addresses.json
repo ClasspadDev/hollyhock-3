@@ -73,6 +73,16 @@
       "endAddress": "0x80039f16"
     },
     {
+      "FunctionName": "LCD_SendCommand",
+      "startAddress": "0x800389e8",
+      "endAddress": "0x80038a0e"
+    },
+    {
+      "FunctionName": "LCD_SetDrawingBounds",
+      "startAddress": "0x80038a10",
+      "endAddress": "0x80038a98"
+    },
+    {
       "FunctionName": "File_Mkdir",
       "startAddress": "0x80058314",
       "endAddress": "0x80058352"

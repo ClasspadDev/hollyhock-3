@@ -51,6 +51,18 @@ enum LCD_Palette {
 };
 
 /**
+ * Passed to @ref LCD_SendCommand.
+ */
+enum LCD_Command {
+	COMMAND_SET_X_WINDOW = 0x2A,
+	COMMAND_SET_Y_WINDOW = 0x2B,
+	COMMAND_PREPARE_FOR_DRAW_DATA = 0x2C,
+	COMMAND_READ_DRAW_DATA = 0x2E
+};
+
+volatile uint16_t *const lcd_data_port = (volatile uint16_t *)0xB4000000;
+
+/**
  * Converts three RGB values into one RGB565 value.
  *
  * @param r The red component, between 0 and 31 (0x1F) inclusive.
@@ -166,6 +178,23 @@ extern void (*LCD_VRAMBackup)();
  * Used in conjunction with @ref LCD_VRAMBackup.
  */
 extern void (*LCD_VRAMRestore)();
+
+extern void (*LCD_SendCommandU)(uint16_t command) __asm__ (UCONCAT("LCD_SendCommand"));
+
+/**
+ * Switches to command mode, send the command and switches back to data mode
+ */
+static inline __attribute__((always_inline)) void LCD_SendCommand(enum LCD_Command command) {
+	LCD_SendCommandU(command);
+}
+
+/**
+ * Sets the region of the next display update. Needs to be called every time.
+ * Usefull for partial updates and/or DMA.
+ *
+ * You probably want to use this in conjunction with @ref LCD_SendCommand
+ */
+extern void (*LCD_SetDrawingBounds)(unsigned int xstart, unsigned int xend, unsigned int ystart, unsigned int yend);
 
 #undef __UCONCAT
 #undef _UCONCAT
