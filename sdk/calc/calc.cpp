@@ -149,11 +149,11 @@ extern "C" void getKey(uint32_t *key1, uint32_t *key2) {
     hw[5];
 }
 
-extern "C" __attribute__((constructor(99), weak)) void calcInit(void) {
+extern "C" __attribute__((weak)) void calcInit(void) {
 	LCD_VRAMBackup();
 }
 
-extern "C" __attribute__((destructor(99), weak)) void calcExit(void) {
+extern "C" __attribute__((weak)) void calcExit(void) {
 	LCD_VRAMRestore();
 	LCD_Refresh();
 }

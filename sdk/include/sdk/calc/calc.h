@@ -32,8 +32,14 @@ static inline void setPixel(unsigned int x, unsigned int y, uint32_t color) {
 
 //Stuff for Initialisation and stuff
 
-void calcInit(void);
-void calcExit(void);
+// they are implmented weak
+#pragma GCC diagnostic push
+#ifndef __clang__
+#pragma GCC diagnostic ignored "-Wprio-ctor-dtor"
+#endif
+__attribute__((constructor(99), used)) void calcInit(void);
+__attribute__((destructor(99), used)) void calcExit(void);
+#pragma GCC diagnostic pop
 
 //Stuff for the keyboard
 
