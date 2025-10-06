@@ -84,63 +84,68 @@
     },
     {
       "FunctionName": "File_Mkdir",
-      "startAddress": "0x80058314",
-      "endAddress": "0x80058352"
+      "startAddress": "0x800589f6",
+      "endAddress": "0x80058a1a"
     },
     {
       "FunctionName": "File_Open",
-      "startAddress": "0x80058354",
-      "endAddress": "0x800583a0"
+      "startAddress": "0x80058a1c",
+      "endAddress": "0x80058a44"
     },
     {
       "FunctionName": "File_Read",
-      "startAddress": "0x800583a2",
-      "endAddress": "0x800583d8"
+      "startAddress": "0x80058a46",
+      "endAddress": "0x80058a72"
     },
     {
       "FunctionName": "File_Write",
-      "startAddress": "0x800583da",
-      "endAddress": "0x80058410"
+      "startAddress": "0x80058a74",
+      "endAddress": "0x80058aa0"
     },
     {
       "FunctionName": "File_Close",
-      "startAddress": "0x80058412",
-      "endAddress": "0x8005844c"
+      "startAddress": "0x80058aa2",
+      "endAddress": "0x80058ac6"
     },
     {
       "FunctionName": "File_Remove",
-      "startAddress": "0x8005844e",
-      "endAddress": "0x8005848c"
+      "startAddress": "0x80058ac8",
+      "endAddress": "0x80058aec"
     },
     {
       "FunctionName": "File_Fstat",
-      "startAddress": "0x8005848e",
-      "endAddress": "0x800584c0"
+      "startAddress": "0x80058aee",
+      "endAddress": "0x80058b16"
     },
     {
       "FunctionName": "File_Stat",
-      "startAddress": "0x800584c2",
-      "endAddress": "0x80058504"
+      "startAddress": "0x80058b18",
+      "endAddress": "0x80058b40"
     },
     {
       "FunctionName": "File_Rename",
-      "startAddress": "0x80058506",
-      "endAddress": "0x80058594"
+      "startAddress": "0x80058b42",
+      "endAddress": "0x80058b6a"
     },
     {
       "FunctionName": "File_Lseek",
-      "startAddress": "0x80058596",
-      "endAddress": "0x800585d8"
+      "startAddress": "0x80058b6c",
+      "endAddress": "0x80058b98"
     },
     {
       "FunctionName": "File_GetAddr",
-      "startAddress": "0x8005876a",
-      "endAddress": "0x800587a4"
+      "startAddress": "0x80058c88",
+      "endAddress": "0x80058cb4"
     },
     {
       "FunctionName": "File_FindFirst",
       "startAddress": "0x8005adac",
       "endAddress": "0x8005b0ee"
+    },
+    {
+      "FunctionName": "File_Flush",
+      "startAddress": "0x80058b9a",
+      "endAddress": "0x80058bbe"
     },
     {
       "FunctionName": "File_FindNext",

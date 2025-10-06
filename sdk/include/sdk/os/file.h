@@ -490,6 +490,8 @@ extern enum File_Error (*File_Stat)(const char *path, struct File_Stat *buf) wu 
  */
 extern int (*File_Write)(int fd, const void *buf, int count) wu ro(2, 3);
 
+extern enum File_Error (*File_Flush)(int fd) wu;
+
 #undef cstr
 #undef ro
 #undef rw

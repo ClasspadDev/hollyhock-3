@@ -59,8 +59,8 @@
     },
     {
       "FunctionName": "File_Close",
-      "startAddress": "0x80057912",
-      "endAddress": "0x8005794C"
+      "startAddress": "0x80057fa2",
+      "endAddress": "0x80057fc6"
     },
     {
       "FunctionName": "File_FindClose",
@@ -79,8 +79,8 @@
     },
     {
       "FunctionName": "File_Fstat",
-      "startAddress": "0x8005798E",
-      "endAddress": "0x800579C0"
+      "startAddress": "0x80057fee",
+      "endAddress": "0x80058016"
     },
     {
       "FunctionName": "File_GetAddr",
@@ -89,43 +89,48 @@
     },
     {
       "FunctionName": "File_Lseek",
-      "startAddress": "0x80057A96",
-      "endAddress": "0x80057AD8"
+      "startAddress": "0x8005806c",
+      "endAddress": "0x80058098"
     },
     {
       "FunctionName": "File_Mkdir",
-      "startAddress": "0x80057814",
-      "endAddress": "0x80057852"
+      "startAddress": "0x80057ef6",
+      "endAddress": "0x80057f1a"
     },
     {
       "FunctionName": "File_Open",
-      "startAddress": "0x80057854",
-      "endAddress": "0x800578A0"
+      "startAddress": "0x80057f1c",
+      "endAddress": "0x80057f44"
     },
     {
       "FunctionName": "File_Read",
-      "startAddress": "0x800578A2",
-      "endAddress": "0x800578D8"
+      "startAddress": "0x80057f46",
+      "endAddress": "0x80057f72"
     },
     {
       "FunctionName": "File_Remove",
-      "startAddress": "0x8005794E",
-      "endAddress": "0x8005798C"
+      "startAddress": "0x80057fc8",
+      "endAddress": "0x80057fec"
     },
     {
       "FunctionName": "File_Rename",
-      "startAddress": "0x80057A06",
-      "endAddress": "0x80057A94"
+      "startAddress": "0x80058042",
+      "endAddress": "0x8005806a"
     },
     {
       "FunctionName": "File_Stat",
-      "startAddress": "0x800579C2",
-      "endAddress": "0x80057A04"
+      "startAddress": "0x80058018",
+      "endAddress": "0x80058040"
     },
     {
       "FunctionName": "File_Write",
-      "startAddress": "0x800578DA",
-      "endAddress": "0x80057910"
+      "startAddress": "0x80057f74",
+      "endAddress": "0x80057fa0"
+    },
+    {
+      "FunctionName": "File_Flush",
+      "startAddress": "0x8005809a",
+      "endAddress": "0x800580be"
     },
     {
       "FunctionName": "GUIButton_ctor",
