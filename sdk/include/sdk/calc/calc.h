@@ -2,7 +2,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#else 
+#elif __STDC_VERSION__ < 202311L
 #define constexpr
 #endif
 
@@ -109,6 +109,7 @@ static inline __attribute__((pure)) bool constexpr testKey(uint32_t key1, uint32
 static inline __attribute__((pure)) bool constexpr testKey(uint32_t, uint32_t key2, Keys2 key) {
     return key2 & key;
 }
-#else
+#endif
+#ifdef constexpr
 #undef constexpr
 #endif

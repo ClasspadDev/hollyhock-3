@@ -61,7 +61,7 @@
 #include <cstdint>
 #ifdef __cplusplus
 extern "C" {
-#else
+#elif __STDC_VERSION__ < 202311L
 #define constexpr
 #endif
 
@@ -500,6 +500,7 @@ extern enum File_Error (*File_Flush)(int fd) wu;
 
 #ifdef __cplusplus
 }
-#else
+#endif
+#ifdef constexpr
 #undef constexpr
 #endif

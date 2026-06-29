@@ -36,19 +36,19 @@
 
 #ifdef __cplusplus
 extern "C" {
-#else
-#define constexpr const
+#elif __STDC_VERSION__ < 202311L
+#define constexpr
 #endif
 
 #include <stdint.h>
 #include <stdbool.h>
 
 // from debug.h in newlib-cp2
-constexpr unsigned int debug_char_width = 8;
-constexpr unsigned int debug_char_height = 12;
-constexpr unsigned int debug_line_height = 14;
-constexpr unsigned int debug_max_columns = 40;
-constexpr unsigned int debug_max_rows = 37;
+static const constexpr unsigned int debug_char_width = 8;
+static const constexpr unsigned int debug_char_height = 12;
+static const constexpr unsigned int debug_line_height = 14;
+static const constexpr unsigned int debug_max_columns = 40;
+static const constexpr unsigned int debug_max_rows = 37;
 extern uint16_t *DEBUG_FONTBASE;
 
 /**
@@ -149,4 +149,7 @@ extern int (*Debug_WaitKey)();
 
 #ifdef __cplusplus
 }
+#endif
+#ifdef constexpr
+#undef constexpr
 #endif
