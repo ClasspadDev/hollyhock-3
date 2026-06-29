@@ -60,7 +60,7 @@ enum LCD_Command {
 	COMMAND_READ_DRAW_DATA = 0x2E
 };
 
-volatile uint16_t *const lcd_data_port = (volatile uint16_t *)0xB4000000;
+static volatile uint16_t *const lcd_data_port = (volatile uint16_t *)0xB4000000;
 
 /**
  * Converts three RGB values into one RGB565 value.
