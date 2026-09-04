@@ -398,6 +398,71 @@
       "endAddress": "0x8008588A"
     },
     {
+      "FunctionName": "USB_ClearRX",
+      "startAddress": "0x800a5178",
+      "endAddress": "0x800a518a"
+    },
+    {
+      "FunctionName": "USB_ClearTX",
+      "startAddress": "0x800a518c",
+      "endAddress": "0x800a519e"
+    },
+    {
+      "FunctionName": "USB_Close",
+      "startAddress": "0x8007090c",
+      "endAddress": "0x80070926"
+    },
+    {
+      "FunctionName": "USB_ForceClose",
+      "startAddress": "0x800a54a6",
+      "endAddress": "0x800a54de"
+    },
+    {
+      "FunctionName": "USB_IsOpen",
+      "startAddress": "0x800a50ba",
+      "endAddress": "0x800a50cc"
+    },
+    {
+      "FunctionName": "USB_Open",
+      "startAddress": "0x8007083a",
+      "endAddress": "0x800708bc"
+    },
+    {
+      "FunctionName": "USB_Peek",
+      "startAddress": "0x800a513a",
+      "endAddress": "0x800a514e"
+    },
+    {
+      "FunctionName": "USB_PollRX",
+      "startAddress": "0x800a5150",
+      "endAddress": "0x800a5162"
+    },
+    {
+      "FunctionName": "USB_PollTX",
+      "startAddress": "0x800a5164",
+      "endAddress": "0x800a5176"
+    },
+    {
+      "FunctionName": "USB_Read",
+      "startAddress": "0x800a5124",
+      "endAddress": "0x800a5138"
+    },
+    {
+      "FunctionName": "USB_ReadSingle",
+      "startAddress": "0x800a5110",
+      "endAddress": "0x800a5122"
+    },
+    {
+      "FunctionName": "USB_Write",
+      "startAddress": "0x800a50e4",
+      "endAddress": "0x800a50f8"
+    },
+    {
+      "FunctionName": "USB_WriteSingle",
+      "startAddress": "0x800a50ce",
+      "endAddress": "0x800a50e2"
+    },
+    {
       "FunctionName": "String_Strcat",
       "startAddress": "0x800A80D0",
       "endAddress": "0x800A80F4"
