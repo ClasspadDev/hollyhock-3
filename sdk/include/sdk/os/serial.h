@@ -101,7 +101,7 @@ extern int (*Serial_ClearRX)(void);
  * see https://prizm.cemetech.net/index.php?title=Serial_Write
  *
  * @param buf pointer to buffer containing the bytes to transmit
- * @count amount of bytes to transmit from buf
+ * @param count amount of bytes to transmit from buf
  */
 extern int (*Serial_Write)(const unsigned char *buf, int count) ro(1, 2);
 
