@@ -458,6 +458,11 @@
       "endAddress": "0x800a50f8"
     },
     {
+      "FunctionName": "ETMU_Sleep",
+      "startAddress": "0x800852bc",
+      "endAddress": "0x800852da"
+    },
+    {
       "FunctionName": "USB_WriteSingle",
       "startAddress": "0x800a50ce",
       "endAddress": "0x800a50e2"

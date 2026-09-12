@@ -46,11 +46,11 @@ extern int (*USB_Close)(void);
 
 extern int (*USB_ForceClose)(bool abortPending);
 
-extern int (*USB_Read)(unsigned char *out, int sz, short *count) wo(1, 2) wo(3);
+extern int (*USB_Read)(void *out, int sz, short *count) wo(1, 2) wo(3);
 
-extern int (*USB_ReadSingle)(unsigned char *out) wo(1);
+extern int (*USB_ReadSingle)(void *out) wo(1);
 
-extern int (*USB_Peek)(int idx, unsigned char *out) wo(2);
+extern int (*USB_Peek)(int idx, uint8_t *out) wo(2);
 
 extern int (*USB_PollRX)(void);
 
@@ -62,11 +62,11 @@ extern int (*USB_ClearRX)(void);
  * @param buf pointer to buffer containing the bytes to transmit
  * @param count amount of bytes to transmit from buf
  */
-extern int (*USB_Write)(const unsigned char *buf, int count) ro(1, 2);
+extern int (*USB_Write)(const void *buf, int count) ro(1, 2);
 
-extern int (*USB_WriteSingle)(unsigned char x);
+extern int (*USB_WriteSingle)(uint8_t x);
 
-extern int (*USB_WriteUnbuffered)(unsigned char x);
+extern int (*USB_WriteUnbuffered)(uint8_t x);
 
 extern int (*USB_PollTX)(void);
 
