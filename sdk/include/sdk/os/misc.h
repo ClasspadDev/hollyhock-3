@@ -20,6 +20,14 @@ extern "C" {
  */
 extern int (*Battery_GetVoltage)();
 
+/**
+ * Spinwaits using external timer unit 5 (ETMU5).
+ * Useful for communication via USB.
+ *
+ * @param ms Sleep duration in milliseconds
+ */
+extern void (*EMTU_Sleep)(unsigned ms);
+
 #ifdef __cplusplus
 }
 #endif

@@ -481,6 +481,11 @@
       "endAddress": "0x800a6092"
     },
     {
+      "FunctionName": "ETMU_Sleep",
+      "startAddress": "0x80085f54",
+      "endAddress": "0x80085f72"
+    },
+    {
       "FunctionName": "Patch_name",
       "startAddress": "0x8091FED0",
       "endAddress": "0x8091FEDB"

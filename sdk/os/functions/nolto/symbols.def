@@ -117,3 +117,4 @@ REGISTER_SYMBOL(_kernel_sysmt)
 
 // misc
 REGISTER_SYMBOL(Battery_GetVoltage)
+REGISTER_SYMBOL(ETMU_Sleep)
