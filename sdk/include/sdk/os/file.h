@@ -61,7 +61,7 @@
 #include <cstdint>
 #ifdef __cplusplus
 extern "C" {
-#elif __STDC_VERSION__ < 202311L
+#else
 #define constexpr
 #endif
 

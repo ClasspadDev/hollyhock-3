@@ -3,7 +3,7 @@
 #ifdef __cplusplus
 extern "C" {
 #elif __STDC_VERSION__ < 202311L
-#define constexpr
+#define constexpr const
 #endif
 
 #include <stdint.h>
@@ -11,15 +11,18 @@ extern "C" {
 //Graphics stuff
 
 static uint16_t * const vram = (uint16_t *)0x8c000000; //address of the vram
-static const constexpr unsigned int width = 320; //width of the screen
-static const constexpr unsigned int height = 528; //height of the screen
+static constexpr unsigned int width = 320; //width of the screen
+static constexpr unsigned int height = 528; //height of the screen
 
 void line(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, uint16_t color);
 void vline(unsigned int x, unsigned int y1, unsigned int y2, uint16_t color);
 void triangle(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, uint16_t colorFill, uint16_t colorLine);
 void fillScreen(uint16_t color);
 
-static inline __attribute__((pure)) uint16_t constexpr color(uint8_t R, uint8_t G, uint8_t B) {
+#ifdef __cplusplus
+constexpr
+#endif
+static inline __attribute__((pure)) uint16_t color(uint8_t R, uint8_t G, uint8_t B) {
     return	(((R<<8) & 0xF800) |
              ((G<<3) & 0x07E0) |
              ((B>>3) & 0x001A));
