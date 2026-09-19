@@ -26,7 +26,7 @@ extern int (*Battery_GetVoltage)();
  *
  * @param ms Sleep duration in milliseconds
  */
-extern void (*EMTU_Sleep)(unsigned ms);
+extern void (*ETMU_Sleep)(unsigned ms);
 
 #ifdef __cplusplus
 }
