@@ -5,7 +5,7 @@
  * If they dont fit anywhere else but are too few to make a new header
  */
 
-#pragma "once"
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
