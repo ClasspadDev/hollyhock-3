@@ -164,8 +164,8 @@
     },
     {
       "FunctionName": "File_FindFirst",
-      "startAddress": "0x8005adac",
-      "endAddress": "0x8005b0ee"
+      "startAddress": "0x80051eae",
+      "endAddress": "0x80051f1a"
     },
     {
       "FunctionName": "File_Flush",
@@ -173,14 +173,109 @@
       "endAddress": "0x80058bbe"
     },
     {
+      "FunctionName": "File_FsInfo",
+      "startAddress": "0x80058bea",
+      "endAddress": "0x80058c12"
+    },
+    {
+      "FunctionName": "File_SetAttr",
+      "startAddress": "0x80058bc0",
+      "endAddress": "0x80058be8"
+    },
+    {
+      "FunctionName": "File_Reclaim",
+      "startAddress": "0x80058c14",
+      "endAddress": "0x80058c3c"
+    },
+    {
+      "FunctionName": "File_Salvage",
+      "startAddress": "0x80058c3e",
+      "endAddress": "0x80058c62"
+    },
+    {
       "FunctionName": "File_FindNext",
-      "startAddress": "0x8005b0f0",
-      "endAddress": "0x8005b3b8"
+      "startAddress": "0x80051f1c",
+      "endAddress": "0x80051f9a"
     },
     {
       "FunctionName": "File_FindClose",
-      "startAddress": "0x8005b3ba",
-      "endAddress": "0x8005b438"
+      "startAddress": "0x8005200c",
+      "endAddress": "0x8005200e"
+    },
+    {
+      "FunctionName": "BFile_Open",
+      "startAddress": "0x80052010",
+      "endAddress": "0x800520d4"
+    },
+    {
+      "FunctionName": "BFile_Close",
+      "startAddress": "0x80052528",
+      "endAddress": "0x8005252a"
+    },
+    {
+      "FunctionName": "BFile_Size",
+      "startAddress": "0x80052424",
+      "endAddress": "0x8005247c"
+    },
+    {
+      "FunctionName": "BFile_Read",
+      "startAddress": "0x800520d6",
+      "endAddress": "0x80052162"
+    },
+    {
+      "FunctionName": "BFile_Write",
+      "startAddress": "0x80052164",
+      "endAddress": "0x8005221c"
+    },
+    {
+      "FunctionName": "BFile_Seek",
+      "startAddress": "0x800522ac",
+      "endAddress": "0x80052324"
+    },
+    {
+      "FunctionName": "BFile_Flush",
+      "startAddress": "0x80052326",
+      "endAddress": "0x80052398"
+    },
+    {
+      "FunctionName": "BFile_Remove",
+      "startAddress": "0x80052668",
+      "endAddress": "0x800526c6"
+    },
+    {
+      "FunctionName": "BFile_Rename",
+      "startAddress": "0x800526c8",
+      "endAddress": "0x80052754"
+    },
+    {
+      "FunctionName": "BFile_Create",
+      "startAddress": "0x80052578",
+      "endAddress": "0x800525da"
+    },
+    {
+      "FunctionName": "BFile_WriteSeek",
+      "startAddress": "0x8005221e",
+      "endAddress": "0x800522aa"
+    },
+    {
+      "FunctionName": "BFile_GetFileInfo",
+      "startAddress": "0x80051e5e",
+      "endAddress": "0x80051eac"
+    },
+    {
+      "FunctionName": "BFile_GetFreeSpace",
+      "startAddress": "0x80051e10",
+      "endAddress": "0x80051e5c"
+    },
+    {
+      "FunctionName": "BFile_SetAttr",
+      "startAddress": "0x80052756",
+      "endAddress": "0x800527b8"
+    },
+    {
+      "FunctionName": "BFile_GetMappedAddress",
+      "startAddress": "0x8005252c",
+      "endAddress": "0x80052576"
     },
     {
       "FunctionName": "PrintStandardErrorString",
