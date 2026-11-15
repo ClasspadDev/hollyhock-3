@@ -154,6 +154,10 @@ extern enum BFile_Error (*BFile_FindFirst)(const char_const16_t *pattern, int *f
 extern enum BFile_Error (*BFile_FindNext)(int findHandle, char_const16_t *name, struct BFile_FindInfo *info) __asm__(UCONCAT("File_FindNext")) wu wo(2) wo(3);
 extern enum BFile_Error (*BFile_FindClose)(int findHandle) __asm__(UCONCAT("File_FindClose"));
 
+/** From the SMEM layer for convenience */
+extern void (*SMEM_BFilePathToFuguePath)(const char_const16_t *smem_uri_path, char *fugue_uri_path) cstr(1) ro(1) wo(2);
+extern void (*SMEM_FuguePathToBFilePath)(const char *fugue_uri_path, char_const16_t *smem_uri_path) cstr(1) ro(1) wo(2);
+
 #undef cstr
 #undef ro
 #undef wo

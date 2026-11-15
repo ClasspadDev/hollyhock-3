@@ -248,6 +248,16 @@
       "endAddress": "0x80051cb8"
     },
     {
+      "FunctionName": "SMEM_BFilePathToFuguePath",
+      "startAddress": "0x80058800",
+      "endAddress": "0x800588e4"
+    },
+    {
+      "FunctionName": "SMEM_FuguePathToBFilePath",
+      "startAddress": "0x800588e6",
+      "endAddress": "0x80058a38"
+    },
+    {
       "FunctionName": "BFile_GetMappedAddress",
       "startAddress": "0x80051a2c",
       "endAddress": "0x80051a76"

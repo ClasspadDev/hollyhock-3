@@ -47,6 +47,8 @@ REGISTER_SYMBOL(BFile_GetMappedAddress)
 REGISTER_SYMBOL(File_FindFirst)
 REGISTER_SYMBOL(File_FindNext)
 REGISTER_SYMBOL(File_FindClose)
+REGISTER_SYMBOL(SMEM_BFilePathToFuguePath)
+REGISTER_SYMBOL(SMEM_FuguePathToBFilePath)
 
 // gui
 REGISTER_SYMBOL(GUIButton_ctor)

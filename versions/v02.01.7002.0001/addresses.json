@@ -278,6 +278,16 @@
       "endAddress": "0x80052576"
     },
     {
+      "FunctionName": "SMEM_BFilePathToFuguePath",
+      "startAddress": "0x80059300",
+      "endAddress": "0x800593e4"
+    },
+    {
+      "FunctionName": "SMEM_FuguePathToBFilePath",
+      "startAddress": "0x800593e6",
+      "endAddress": "0x80059538"
+    },
+    {
       "FunctionName": "PrintStandardErrorString",
       "startAddress": "0x8006658c",
       "endAddress": "0x80066740"
