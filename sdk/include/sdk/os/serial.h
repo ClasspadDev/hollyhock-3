@@ -26,6 +26,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <sdk/os/comm.h>
 
 enum Serial_Bitrate {
     SERIAL_BITRATE_300 = 0,
@@ -74,27 +75,30 @@ struct __attribute__((packed)) Serial_Settings {
  * 3 data length 0=8bit, 1=7bit
  * 4 stop bits	 0=1bit, 1=2bit
  * 5 always 0
- * Returns: 
- * 0 success
- * 3 already open
  *
- * @param mode The mode of the serial port. 
+ * @param mode The mode of the serial port.
+ * @return COMM_OK, COMM_ALREADY_OPEN or COMM_NOT_READY
+ *         (see @ref Comm_Status)
  */
-extern int (*Serial_Open)(const struct Serial_Settings *mode) ro(1);
+extern enum Comm_Status (*Serial_Open)(const struct Serial_Settings *mode) ro(1);
 
-extern int (*Serial_IsOpen)(void);
+extern enum Comm_Status (*Serial_IsOpen)(void);
 
-extern int (*Serial_Close)(bool abortPending);
+extern enum Comm_Status (*Serial_Close)(bool abortPending);
 
-extern int (*Serial_Read)(unsigned char *out, int sz, short *count) wo(1, 2) wo(3);
+/**
+ * Reads up to sz bytes into out and writes the number received to count.
+ */
+extern enum Comm_Status (*Serial_Read)(void *out, uint16_t sz, uint16_t *count) wo(1) wo(3);
 
-extern int (*Serial_ReadSingle)(unsigned char *out) wo(1);
+extern enum Comm_Status (*Serial_ReadSingle)(void *out) wo(1);
 
-extern int (*Serial_Peek)(int idx, unsigned char *out) wo(2);
+extern enum Comm_Status (*Serial_Peek)(uint16_t idx, void *out) wo(2);
 
-extern int (*Serial_PollRX)(void);
+/** @return number of bytes available to read. */
+extern uint16_t (*Serial_PollRX)(void);
 
-extern int (*Serial_ClearRX)(void);
+extern enum Comm_Status (*Serial_ClearRX)(void);
 
 /**
  * Sends a number of bytes through the 3-pin serial port, by putting them in the transmit buffer.
@@ -103,15 +107,16 @@ extern int (*Serial_ClearRX)(void);
  * @param buf pointer to buffer containing the bytes to transmit
  * @param count amount of bytes to transmit from buf
  */
-extern int (*Serial_Write)(const unsigned char *buf, int count) ro(1, 2);
+extern enum Comm_Status (*Serial_Write)(const void *buf, uint16_t count) ro(1);
 
-extern int (*Serial_WriteSingle)(unsigned char x);
+extern enum Comm_Status (*Serial_WriteSingle)(uint8_t x);
 
-extern int (*Serial_WriteUnbuffered)(unsigned char x);
+extern enum Comm_Status (*Serial_WriteUnbuffered)(uint8_t x);
 
-extern int (*Serial_PollTX)(void);
+/** @return number of bytes of free space in the transmit buffer. */
+extern uint16_t (*Serial_PollTX)(void);
 
-extern int (*Serial_ClearTX)(void);
+extern enum Comm_Status (*Serial_ClearTX)(void);
 
 #undef ro
 #undef rw

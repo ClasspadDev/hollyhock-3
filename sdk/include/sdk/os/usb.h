@@ -27,8 +27,9 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <sdk/os/comm.h>
 
-static constexpr const short MODE_USB = 0x20;
+static constexpr const uint16_t MODE_USB = 0x20;
 
 /**
  * Opens the USB port.
@@ -36,25 +37,30 @@ static constexpr const short MODE_USB = 0x20;
  * Does not set comm open flag meaning you want to use @ref USB_ForceClose
  *
  * @param mode Inherited from the Comm interface; needs to be 0x20
- * @return 0: successful; 5: timeout; 10: Clear/On abort
+ * @return COMM_OK, COMM_BUSY, COMM_NOT_READY or COMM_CANCELLED
+ *         (see @ref Comm_Status)
  */
-extern int (*USB_Open)(short mode);
+extern enum Comm_Status (*USB_Open)(uint16_t mode);
 
-extern int (*USB_IsOpen)(void);
+extern enum Comm_Status (*USB_IsOpen)(void);
 
-extern int (*USB_Close)(void);
+extern enum Comm_Status (*USB_Close)(void);
 
-extern int (*USB_ForceClose)(bool abortPending);
+extern enum Comm_Status (*USB_ForceClose)(uint16_t mode);
 
-extern int (*USB_Read)(void *out, int sz, short *count) wo(1, 2) wo(3);
+/**
+ * Reads up to sz bytes into out and writes the number received to count.
+ */
+extern enum Comm_Status (*USB_Read)(void *out, uint16_t sz, uint16_t *count) wo(1) wo(3);
 
-extern int (*USB_ReadSingle)(void *out) wo(1);
+extern enum Comm_Status (*USB_ReadSingle)(void *out) wo(1);
 
-extern int (*USB_Peek)(int idx, uint8_t *out) wo(2);
+extern enum Comm_Status (*USB_Peek)(uint16_t idx, void *out) wo(2);
 
-extern int (*USB_PollRX)(void);
+/** @return number of bytes available to read. */
+extern uint16_t (*USB_PollRX)(void);
 
-extern int (*USB_ClearRX)(void);
+extern enum Comm_Status (*USB_ClearRX)(void);
 
 /**
  * Sends a number of bytes through the USB port, by putting them in the transmit buffer.
@@ -62,15 +68,16 @@ extern int (*USB_ClearRX)(void);
  * @param buf pointer to buffer containing the bytes to transmit
  * @param count amount of bytes to transmit from buf
  */
-extern int (*USB_Write)(const void *buf, int count) ro(1, 2);
+extern enum Comm_Status (*USB_Write)(const void *buf, uint16_t count) ro(1);
 
-extern int (*USB_WriteSingle)(uint8_t x);
+extern enum Comm_Status (*USB_WriteSingle)(uint8_t x);
 
-extern int (*USB_WriteUnbuffered)(uint8_t x);
+extern enum Comm_Status (*USB_WriteUnbuffered)(uint8_t x);
 
-extern int (*USB_PollTX)(void);
+/** @return number of bytes of free space in the transmit buffer. */
+extern uint16_t (*USB_PollTX)(void);
 
-extern int (*USB_ClearTX)(void);
+extern enum Comm_Status (*USB_ClearTX)(void);
 
 #undef ro
 #undef rw
