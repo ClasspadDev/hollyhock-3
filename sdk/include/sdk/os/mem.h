@@ -110,6 +110,10 @@ extern void *(*Mem_Sbrk)(long size);
  */
 extern signed char (*Mem_SbrkMode)(signed char newMode);
 
+#undef __UCONCAT
+#undef _UCONCAT
+#undef UCONCAT
+
 #ifdef __cplusplus
 }
 #endif

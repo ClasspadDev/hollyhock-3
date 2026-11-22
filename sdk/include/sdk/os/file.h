@@ -2,14 +2,16 @@
  * @file
  * @brief Functions for interacting with the calculator's file system.
  *
- * Provides an API similar to that of Unix.
+ * Exposes the Fugue atomic API, with byte-string paths, Fugue descriptors and
+ * Fugue error codes. Directory searches belong to sdk/os/bfile.h and use a
+ * different descriptor, path encoding and error namespace.
  * 
  * The storage which appears when the calculator is attached to a PC is found
- * under the path @c \\\\fls0\ (remember to escape the @c \ in strings!).
+ * under the path @c \\fls0\ (remember to escape the @c \ in strings!).
  *
  * Example: reading 256 bytes from a file called @c test.txt from the USB flash
  * @code{cpp}
- * int fd = File_Open("\\\\fls0\\test.txt", FILE_OPEN_READ);
+ * int fd = File_Open("\\fls0\\test.txt", FILE_OPEN_READ);
  * if (fd < 0) {
  *     // An error occurred calling open
  *     goto exit;
@@ -33,7 +35,7 @@
  *
  * Example: writing 16 bytes to a non-existant file called @c f.bin in a folder @c test in the USB flash
  * @code{cpp}
- * int fd = File_Open("\\\\fls0\\test\\f.bin", FILE_OPEN_WRITE | FILE_OPEN_CREATE);
+ * int fd = File_Open("\\fls0\\test\\f.bin", FILE_OPEN_WRITE | FILE_OPEN_CREATE);
  * if (fd < 0) {
  *     // An error occurred calling open
  *     goto exit;
@@ -58,7 +60,6 @@
 
 #pragma once
 
-#include <cstdint>
 #ifdef __cplusplus
 extern "C" {
 #else
@@ -81,11 +82,6 @@ extern "C" {
 #endif
 
 #define wu __attribute__((warn_unused_result))
-
-// You don't want to work with these
-// but this is the only way to get
-// them relieably right
-typedef uint16_t char_const16_t;
 
 /**
  * Errors returned by file system functions. All negative numbers.
@@ -141,6 +137,17 @@ enum File_Open {
 	FILE_OPEN_CREATE = 1 << 2,
 	/// Opens the file with the file offset set to the end of the file.
 	FILE_OPEN_APPEND = 1 << 4
+};
+
+/** FAT attribute bits returned in File_Stat.attributes. */
+enum File_Attributes {
+	FILE_ATTR_READ_ONLY = 0x01,
+	FILE_ATTR_HIDDEN = 0x02,
+	FILE_ATTR_SYSTEM = 0x04,
+	FILE_ATTR_DIRECTORY = 0x10,
+	FILE_ATTR_ARCHIVE = 0x20,
+	/// Clear other status bits before passing a stat record to File_SetAttr.
+	FILE_ATTR_SETTABLE_MASK = 0x37
 };
 
 /**
@@ -272,7 +279,8 @@ static inline __attribute__((pure)) uint16_t constexpr File_StatTimeSecond(uint1
  * </table>
  */
 struct File_Stat {
-	uint32_t unknown1;
+	/// FAT attributes; bit 0x10 identifies a directory.
+	uint32_t attributes;
 
 	/**
 	 * The size of the file, in bytes.
@@ -313,27 +321,20 @@ struct File_Stat {
 };
 
 /**
- * Information about a file/directory, as returned from @ref findFirst or
- * @ref findNext.
+ * Capacity and geometry returned by File_FsInfo.
+ *
+ * The firmware writes a 0x34-byte, 4-byte-aligned record. The three byte counts
+ * are 64-bit values in native byte order. Reserved words are output fields with
+ * OS-specific meanings; callers should not interpret them.
  */
-struct __attribute__((packed)) File_FindInfo {
-	uint8_t unknown0[4];
-
-	/// The type of entry which was located.
-	enum {
-		EntryTypeFile = 0x1,
-		EntryTypeDirectory = 0x5
-	} type : 16;
-
-	uint8_t unknown1[2];
-	
-	/**
-	 * The size of the entry, in bytes. If the entry is a directory, @c size is
-	 * zero.
-	 */
-	uint32_t size;
-	
-	uint8_t unknown2[8];
+struct __attribute__((packed, aligned(4))) File_FsInfo {
+	uint64_t totalBytes;
+	uint64_t freeBytes;
+	uint64_t usedBytes;
+	uint32_t reserved0[3];
+	uint32_t sectorSize;
+	uint32_t sectorsPerCluster;
+	uint32_t reserved1[2];
 };
 
 /**
@@ -343,48 +344,6 @@ struct __attribute__((packed)) File_FindInfo {
  * @return 0 on success, or a negative error code on failure.
  */
 extern enum File_Error (*File_Close)(int fd);
-
-/**
- * Closes a find handle.
- * 
- * Very, very, very bad things happen if a find handle is not closed.
- * 
- * @param findHandle The find handle to close.
- * @return 0 on success, or a negative error code on failure.
- */
-extern enum File_Error (*File_FindClose)(int findHandle);
-
-/**
- * Starts a find operation, locating files matching a specific path.
- * 
- * Can be used to list the contents of a directory by using a wildcard. For
- * example, passing the path @c L"\\fls0\\*" or @c L"\\fls0\\*.*" matches all
- * files and directories on the calculator's flash (not recursive, though).
- * 
- * To find the next file/directory which matches the path, call @ref File_FindNext,
- * passing in the find handle returned by this function. Ensure the find handle
- * is closed using @ref File_FindClose when the find operation is finished. Bad
- * things happen if the handle is not closed.
- * 
- * @param[in] path The path to search. May contain wildcards.
- * @param[out] findHandle The find handle created. Must be closed when the find
- * operation is finished.
- * @param[out] name The name of the file/directory found.
- * @param[out] findInfoBuf Information about the found file.
- * @return 0 on success, or a negative error code on failure.
- */
-extern enum File_Error (*File_FindFirst)(const char_const16_t *path, int *findHandle, char_const16_t *name, struct File_FindInfo *findInfoBuf) wu cstr(1) ro(1) wo(2) wo(3) wo(4);
-
-/**
- * Returns information about the next matching file/directory in a find
- * operation.
- * 
- * @param findHandle The find handle returned from @ref File_FindFirst.
- * @param[out] name The name of the file/directory found.
- * @param[out] findInfoBuf Information about the found file.
- * @return 0 on success, or a negative error code on failure.
- */
-extern enum File_Error (*File_FindNext)(int findHandle, char_const16_t *name, struct File_FindInfo *findInfoBuf) wu wo(2) wo(3);
 
 /**
  * Retrieves information about an open file.
@@ -491,6 +450,43 @@ extern enum File_Error (*File_Stat)(const char *path, struct File_Stat *buf) wu 
 extern int (*File_Write)(int fd, const void *buf, int count) wu ro(2, 3);
 
 extern enum File_Error (*File_Flush)(int fd) wu;
+
+/**
+ * Query a mounted device's capacity and geometry.
+ * @param device Device root without a trailing separator, eg. "\\fls0".
+ * @param[out] info Capacity and geometry record.
+ * @return 0 on success, or a Fugue error.
+ */
+extern enum File_Error (*File_FsInfo)(const char *device, struct File_FsInfo *info) wu cstr(1) ro(1) wo(2);
+
+/**
+ * Update FAT attributes and timestamps from a File_Stat record.
+ *
+ * Obtain the record with File_Stat first so existing timestamps are preserved.
+ * Mask attributes with FILE_ATTR_SETTABLE_MASK and preserve the directory bit:
+ * this call cannot change a file into a directory or vice versa. fileSize is
+ * ignored; this operation does not resize the file.
+ * @return 0 on success, or a Fugue error.
+ */
+extern enum File_Error (*File_SetAttr)(const char *path, const struct File_Stat *info) wu cstr(1) ro(1) ro(2);
+
+/**
+ * Run the mounted device's reclaim/garbage-collection operation.
+ * @param device Device root without a trailing separator, eg. "\\fls0".
+ * @param workLimit Nonnegative OS-specific work limit; its unit is not known.
+ * @return A nonnegative device-specific result, or a Fugue error.
+ */
+extern int (*File_Reclaim)(const char *device, int workLimit) wu cstr(1) ro(1);
+
+/**
+ * Repair a mounted filesystem's allocation metadata.
+ *
+ * This is a potentially long-running, metadata-changing maintenance operation.
+ * The filesystem must not be in use; busy states return FILE_EACCES.
+ * @param device Device root without a trailing separator, eg. "\\fls0".
+ * @return 0 on success, or a Fugue error.
+ */
+extern enum File_Error (*File_Salvage)(const char *device) wu cstr(1) ro(1);
 
 #undef cstr
 #undef ro

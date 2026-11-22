@@ -15,6 +15,9 @@ all: libsdk.a Makefile
 
 $(CC_NOLTO_OBJECTS): CC_FLAGS+=-fno-lto
 
+# Rebuild the exported pointer registry when bindings are added or renamed.
+os/functions/nolto/impl.o: os/functions/nolto/symbols.def
+
 docs:
 	$(DOXYGEN)
 
